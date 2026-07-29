@@ -1,0 +1,896 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <link rel="icon" type="image/jpeg" href="academy%20logo.jpg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Courses & Services - Al Fatima Academy</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Poppins:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        serif: ['Cinzel', 'serif'],
+                    },
+                    colors: {
+                        gold: {
+                            50: '#fdfbf7',
+                            100: '#fcf7e8',
+                            400: '#e5c060',
+                            500: '#D4AF37',
+                            600: '#bca02d',
+                            700: '#967d22',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gold-gradient {
+            background: linear-gradient(135deg, #FFD700 0%, #D4AF37 50%, #AA7C11 100%);
+        }
+
+        .text-gold-gradient {
+            background: linear-gradient(135deg, #FFD700 0%, #D4AF37 100%);
+            -webkit-background-clip: text;
+            /* Vendor prefix (Chrome/Safari) */
+            background-clip: text;
+            /* <-- Yeh standard line add karein (Warning khatam ho jayegi) */
+            -webkit-text-fill-color: transparent;
+        }
+
+        .skiptranslate {
+            display: none !important;
+        }
+
+        body {
+            top: 0px !important;
+        }
+    </style>
+</head>
+
+<body class="bg-neutral-950 text-gray-100 font-sans selection:bg-gold-500 selection:text-black">
+
+    <!-- ================= HEADER SECTION ================= -->
+    <header class="sticky top-0 z-40 bg-neutral-950/90 backdrop-blur-md border-b border-gold-500/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo & Title -->
+                <div class="flex items-center space-x-3">
+                    <img src="academy logo.jpg" alt="Al Fatima Academy Logo"
+                        class="w-14 h-14 object-contain rounded-full border border-gold-500/30 bg-black">
+                    <div>
+                        <span class="font-serif text-lg md:text-xl font-bold tracking-wider text-gold-gradient block">Al
+                            Fatima Academy</span>
+                        <span class="text-[9px] uppercase tracking-widest text-gray-400 block -mt-1">A Project of Al
+                            Quran International</span>
+                    </div>
+                </div>
+
+                <!-- Navigation Links -->
+                <nav class="hidden md:flex space-x-8 text-sm font-semibold tracking-wide">
+                    <a href="index.html" class="hover:text-gold-500 transition-colors">Home</a>
+                    <a href="about.html" class="hover:text-gold-500 transition-colors">About Us</a>
+                    <a href="services.html" class="text-gold-500 font-bold transition-colors">Services</a>
+                    <a href="packages.html" class="hover:text-gold-400 transition-colors">Packages</a>
+                    <a href="quran.html" class="hover:text-gold-500 transition-colors">Read Quran</a>
+                    <a href="contact.html" class="hover:text-gold-500 transition-colors">Contact</a>
+                </nav>
+
+                <!-- Phone & Language Dropdown -->
+                <div class="flex items-center space-x-4">
+                    <a href="tel:+923075329240"
+                        class="hidden lg:flex items-center space-x-2 text-xs font-bold border border-gold-500/30 px-3 py-1.5 rounded-full bg-gold-500/5 hover:bg-gold-500/20 transition-all text-gold-400">
+                        <i class="fa-solid fa-phone"></i>
+                        <span>+923075329240</span>
+                    </a>
+
+                    <!-- Hidden Google Translate Element Container -->
+
+
+                    <!-- Customized Language Dropdown -->
+
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ================= HERO SECTION ================= -->
+    <!-- ================= SERVICES HERO SECTION WITH BG IMAGE ================= -->
+    <section class="relative py-24 md:py-32 flex items-center justify-center overflow-hidden bg-neutral-950">
+
+        <!-- Background Image Container with Overlay -->
+        <div class="absolute inset-0 z-0">
+            <!-- Background Image -->
+            <img src="services page them.jpg" alt="Quran Background"
+                class="w-full h-full object-cover object-center opacity-40">
+            <!-- Dark Gradients to blend with dark page theme and ensure text readability -->
+            <div class="absolute inset-0 bg-gradient-to-b from-neutral-950/80 via-neutral-950/70 to-neutral-950"></div>
+            <div class="absolute inset-0 bg-radial-gradient from-transparent to-neutral-950/90"></div>
+        </div>
+
+        <!-- Content Area (Z-Index ensures it stays on top of background) -->
+        <div class="relative z-10 max-w-4xl mx-auto px-4 text-center">
+
+            <!-- Explore Badge -->
+            <div class="inline-block mb-4">
+                <span
+                    class="border border-gold-500/30 bg-gold-500/10 text-gold-400 text-xs font-semibold tracking-widest uppercase px-4 py-1.5 rounded-full">
+                    Explore Our Courses
+                </span>
+            </div>
+
+            <!-- Main Title -->
+            <h1 class="font-serif text-4xl md:text-6xl font-bold text-white tracking-wide leading-tight drop-shadow-md">
+                Our <span class="text-gold-500">Islamic</span> Services
+            </h1>
+
+            <!-- Small Gold Divider Line -->
+            <div class="w-20 h-1 bg-gold-500 mx-auto my-6 rounded-full"></div>
+
+            <!-- Description Text -->
+            <p class="text-gray-300 text-base md:text-lg leading-relaxed max-w-2xl mx-auto drop-shadow">
+                Choose from our structured learning pathways. Whether you are a beginner starting from scratch or
+                looking to refine your Tajweed, we have custom classes for you.
+            </p>
+
+        </div>
+    </section>
+
+    <!-- ================= UPDATED SERVICES SECTION WITH IMAGES ================= -->
+    <section class="py-16 bg-neutral-950 text-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <!-- Section Title -->
+            <div class="text-center mb-12">
+                <span class="text-gold-500 font-semibold tracking-widest text-xs uppercase">Premium Programs</span>
+                <h2 class="font-serif text-3xl md:text-4xl font-bold mt-2 text-white">Our Dedicated Courses</h2>
+                <div class="w-24 h-1 bg-gold-500 mx-auto mt-4 rounded-full"></div>
+            </div>
+
+            <!-- Two Column Grid (Just like your screenshot layout but responsive) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+                <!-- Card 1: Noorani Qaida Course -->
+                <div
+                    class="bg-neutral-900/40 border border-gold-500/20 rounded-2xl overflow-hidden hover:border-gold-500/50 transition-all duration-300 flex flex-col justify-between">
+                    <div>
+                        <!-- Course Image -->
+                        <div class="relative h-56 overflow-hidden bg-black">
+                            <img src="madni qaida.jpg" alt="Madni Qaida Course"
+                                class="w-full h-full object-cover opacity-85 hover:scale-105 transition-transform duration-500">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-neutral-900 via-transparent to-transparent">
+                            </div>
+                        </div>
+                        <!-- Course Content -->
+                        <div class="p-6 md:p-8">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <!-- Book Icon from your design -->
+                                <div class="text-gold-500 text-2xl">
+                                    <i class="fa-solid fa-book-open"></i>
+                                </div>
+                                <h3
+                                    class="font-serif text-xl md:text-2xl font-bold tracking-wide text-gold-400 uppercase">
+                                    Noorani Qaida Course</h3>
+                            </div>
+                            <p class="text-gray-300 text-sm md:text-base leading-relaxed mb-6">
+                                This is the essential foundation course for kids and adults who are starting Arabic
+                                reading for the first time. It helps students learn the Arabic alphabet, recognize
+                                joined letters, and understand foundational grammar.
+                            </p>
+                            <!-- Bullet Points -->
+                            <ul class="space-y-3 mb-6">
+                                <li class="flex items-center space-x-3 text-sm text-gray-300">
+                                    <i class="fa-solid fa-circle-check text-gold-500 text-xs"></i>
+                                    <span>Arabic Letter Recognition</span>
+                                </li>
+                                <li class="flex items-center space-x-3 text-sm text-gray-300">
+                                    <i class="fa-solid fa-circle-check text-gold-500 text-xs"></i>
+                                    <span>Correct Phonetics and Accents</span>
+                                </li>
+                                <li class="flex items-center space-x-3 text-sm text-gray-300">
+                                    <i class="fa-solid fa-circle-check text-gold-500 text-xs"></i>
+                                    <span>Foundation for Reading Fluency</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Enroll Button -->
+                    <div class="p-6 md:p-8 pt-0">
+                        <a href="https://wa.me/923075329240" target="_blank"
+                            class="block text-center w-full bg-transparent hover:bg-gold-500/10 border border-gold-500/30 hover:border-gold-500 text-gold-400 font-semibold py-3 px-4 rounded-xl text-sm tracking-wider transition-all duration-300">
+                            Enroll in Course
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 2: Tajweed-Ul-Quran Course -->
+                <div
+                    class="bg-neutral-900/40 border border-gold-500/20 rounded-2xl overflow-hidden hover:border-gold-500/50 transition-all duration-300 flex flex-col justify-between">
+                    <div>
+                        <!-- Course Image -->
+                        <div class="relative h-56 overflow-hidden bg-black">
+                            <img src="tajweed quran.jpg" alt="Tajweed-ul-Quran Course"
+                                class="w-full h-full object-cover opacity-85 hover:scale-105 transition-transform duration-500">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-neutral-900 via-transparent to-transparent">
+                            </div>
+                        </div>
+                        <!-- Course Content -->
+                        <div class="p-6 md:p-8">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <!-- Mic Icon from your design -->
+                                <div class="text-gold-500 text-2xl">
+                                    <i class="fa-solid fa-microphone"></i>
+                                </div>
+                                <h3
+                                    class="font-serif text-xl md:text-2xl font-bold tracking-wide text-gold-400 uppercase">
+                                    Tajweed-ul-Quran Course</h3>
+                            </div>
+                            <p class="text-gray-300 text-sm md:text-base leading-relaxed mb-6">
+                                Designed for those who can read but want to perfect their pronunciation. Learn the rules
+                                of Tajweed (Makharij, Gunnah, Ikhfa, etc.) to recite the Holy Quran exactly the way it
+                                was revealed.
+                            </p>
+                            <!-- Bullet Points -->
+                            <ul class="space-y-3 mb-6">
+                                <li class="flex items-center space-x-3 text-sm text-gray-300">
+                                    <i class="fa-solid fa-circle-check text-gold-500 text-xs"></i>
+                                    <span>Master Classic Recitation Rules</span>
+                                </li>
+                                <li class="flex items-center space-x-3 text-sm text-gray-300">
+                                    <i class="fa-solid fa-circle-check text-gold-500 text-xs"></i>
+                                    <span>Focus on Accent & Vocal Control</span>
+                                </li>
+                                <li class="flex items-center space-x-3 text-sm text-gray-300">
+                                    <i class="fa-solid fa-circle-check text-gold-500 text-xs"></i>
+                                    <span>Weekly Recitation Assessments</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Enroll Button -->
+                    <div class="p-6 md:p-8 pt-0">
+                        <a href="https://wa.me/923075329240" target="_blank"
+                            class="block text-center w-full bg-transparent hover:bg-gold-500/10 border border-gold-500/30 hover:border-gold-500 text-gold-400 font-semibold py-3 px-4 rounded-xl text-sm tracking-wider transition-all duration-300">
+                            Enroll in Course
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 3: Quran Memorization (Hifz) -->
+                <div
+                    class="bg-neutral-900/40 border border-gold-500/20 rounded-2xl overflow-hidden hover:border-gold-500/50 transition-all duration-300 flex flex-col justify-between">
+                    <div>
+                        <!-- Course Image -->
+                        <div class="relative h-56 overflow-hidden bg-black">
+                            <img src="nazra & hifz quran.jpg" alt="Quran Memorization (Hifz)"
+                                class="w-full h-full object-cover opacity-85 hover:scale-105 transition-transform duration-500">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-neutral-900 via-transparent to-transparent">
+                            </div>
+                        </div>
+                        <!-- Course Content -->
+                        <div class="p-6 md:p-8">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <!-- Heart Icon from your design -->
+                                <div class="text-gold-500 text-2xl">
+                                    <i class="fa-solid fa-heart"></i>
+                                </div>
+                                <h3
+                                    class="font-serif text-xl md:text-2xl font-bold tracking-wide text-gold-400 uppercase">
+                                    Quran Memorization (Hifz)</h3>
+                            </div>
+                            <p class="text-gray-300 text-sm md:text-base leading-relaxed mb-6">
+                                A systematic and easy-to-follow program to help kids or adults memorize specific Surahs
+                                or the complete Quran. Our experienced Huffaz design customized lesson schedules
+                                according to the student's memory retention capacity.
+                            </p>
+                            <!-- Bullet Points -->
+                            <ul class="space-y-3 mb-6">
+                                <li class="flex items-center space-x-3 text-sm text-gray-300">
+                                    <i class="fa-solid fa-circle-check text-gold-500 text-xs"></i>
+                                    <span>Custom-paced Hifz Plan</span>
+                                </li>
+                                <li class="flex items-center space-x-3 text-sm text-gray-300">
+                                    <i class="fa-solid fa-circle-check text-gold-500 text-xs"></i>
+                                    <span>Memorization + Revision Balance</span>
+                                </li>
+                                <li class="flex items-center space-x-3 text-sm text-gray-300">
+                                    <i class="fa-solid fa-circle-check text-gold-500 text-xs"></i>
+                                    <span>Daily Testing by Huffaz</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Enroll Button -->
+                    <div class="p-6 md:p-8 pt-0">
+                        <a href="https://wa.me/923075329240" target="_blank"
+                            class="block text-center w-full bg-transparent hover:bg-gold-500/10 border border-gold-500/30 hover:border-gold-500 text-gold-400 font-semibold py-3 px-4 rounded-xl text-sm tracking-wider transition-all duration-300">
+                            Enroll in Course
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 4: Islamic Supplications & Etiquette -->
+                <div
+                    class="bg-neutral-900/40 border border-gold-500/20 rounded-2xl overflow-hidden hover:border-gold-500/50 transition-all duration-300 flex flex-col justify-between">
+                    <div>
+                        <!-- Course Image -->
+                        <div class="relative h-56 overflow-hidden bg-black">
+                            <img src="islamic suplic.jpg" alt="Islamic Supplications & Etiquette"
+                                class="w-full h-full object-cover opacity-85 hover:scale-105 transition-transform duration-500">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-neutral-900 via-transparent to-transparent">
+                            </div>
+                        </div>
+                        <!-- Course Content -->
+                        <div class="p-6 md:p-8">
+                            <div class="flex items-center space-x-3 mb-4">
+                                <!-- Star Icon from your design -->
+                                <div class="text-gold-500 text-2xl">
+                                    <i class="fa-solid fa-star"></i>
+                                </div>
+                                <h3
+                                    class="font-serif text-xl md:text-2xl font-bold tracking-wide text-gold-400 uppercase">
+                                    Islamic Supplications & Etiquette</h3>
+                            </div>
+                            <p class="text-gray-300 text-sm md:text-base leading-relaxed mb-6">
+                                Learn daily life Sunnah prayers, essential Supplications (Duas), basic Islamic
+                                jurisprudence, prayer (Salah) method, and Islamic morals (Akhlaq). Perfect for young
+                                children growing up in non-Islamic countries.
+                            </p>
+                            <!-- Bullet Points -->
+                            <ul class="space-y-3 mb-6">
+                                <li class="flex items-center space-x-3 text-sm text-gray-300">
+                                    <i class="fa-solid fa-circle-check text-gold-500 text-xs"></i>
+                                    <span>Daily Masnoon Duas</span>
+                                </li>
+                                <li class="flex items-center space-x-3 text-sm text-gray-300">
+                                    <i class="fa-solid fa-circle-check text-gold-500 text-xs"></i>
+                                    <span>Step-by-Step Salah (Prayer) Training</span>
+                                </li>
+                                <li class="flex items-center space-x-3 text-sm text-gray-300">
+                                    <i class="fa-solid fa-circle-check text-gold-500 text-xs"></i>
+                                    <span>Islamic Ethics & Values</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Enroll Button -->
+                    <div class="p-6 md:p-8 pt-0">
+                        <a href="https://wa.me/923075329240" target="_blank"
+                            class="block text-center w-full bg-transparent hover:bg-gold-500/10 border border-gold-500/30 hover:border-gold-500 text-gold-400 font-semibold py-3 px-4 rounded-xl text-sm tracking-wider transition-all duration-300">
+                            Enroll in Course
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <!-- ================= QUICK REGISTRATION & FREE TRIAL FORM ================= -->
+    <section class="py-16 bg-neutral-900 border-t border-gold-500/10">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <!-- Form Header -->
+            <div class="text-center mb-10">
+                <span class="text-gold-500 font-semibold tracking-widest text-xs uppercase">Start Your Journey</span>
+                <h2 class="font-serif text-3xl md:text-4xl font-bold mt-2 text-white">Book 3 Days Free Trial</h2>
+                <p class="text-gray-400 text-sm mt-2 max-w-lg mx-auto">
+                    No credit card required. Fill out this quick form and our administrator will contact you within 24
+                    hours to schedule your free classes.
+                </p>
+                <div class="w-16 h-1 bg-gold-500 mx-auto mt-4 rounded-full"></div>
+            </div>
+
+            <!-- Registration Form Container -->
+            <div class="bg-neutral-950/60 border border-gold-500/20 p-6 md:p-10 rounded-3xl shadow-xl">
+                <form id="registrationForm" onsubmit="handleRegistration(event)" class="space-y-6">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Full Name -->
+                        <div>
+                            <label class="block text-sm font-medium text-gold-400 mb-2">Student or Parent Name *</label>
+                            <input type="text" id="regName" required placeholder="e.g., Ali Hamza"
+                                class="w-full bg-neutral-900 border border-neutral-800 focus:border-gold-500 text-gray-100 rounded-xl px-4 py-3 text-sm outline-none transition-all duration-300">
+                        </div>
+
+                        <!-- WhatsApp Number -->
+                        <div>
+                            <label class="block text-sm font-medium text-gold-400 mb-2">WhatsApp Number *</label>
+                            <input type="tel" id="regPhone" required placeholder="e.g., +92 300 1234567"
+                                class="w-full bg-neutral-900 border border-neutral-800 focus:border-gold-500 text-gray-100 rounded-xl px-4 py-3 text-sm outline-none transition-all duration-300">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Choose Course -->
+                        <div>
+                            <label class="block text-sm font-medium text-gold-400 mb-2">Select Course *</label>
+                            <select id="regCourse" required
+                                class="w-full bg-neutral-900 border border-neutral-800 focus:border-gold-500 text-gray-300 rounded-xl px-4 py-3 text-sm outline-none transition-all duration-300">
+                                <option value="" disabled selected>Choose your desired course</option>
+                                <option value="Noorani Qaida">Madni Qaida</option>
+                                <option value="Tajweed-ul-Quran">Tajweed-ul-Quran Course</option>
+                                <option value="Nazra & Hifz Quran">Nazra Quran Course</option>
+                                <option value="Islamic Supplications & Etiquette">Basic Islam/Nimaz & Hadis
+                                </option>
+                            </select>
+                        </div>
+
+                        <!-- Preferred Timezone / Country -->
+                        <div>
+                            <label class="block text-sm font-medium text-gold-400 mb-2">Your Country / Timezone
+                                *</label>
+                            <input type="text" id="regTimezone" required placeholder="e.g., London, UK (BST)"
+                                class="w-full bg-neutral-900 border border-neutral-800 focus:border-gold-500 text-gray-100 rounded-xl px-4 py-3 text-sm outline-none transition-all duration-300">
+                        </div>
+                    </div>
+
+                    <!-- Custom Message/Note -->
+                    <div>
+                        <label class="block text-sm font-medium text-gold-400 mb-2">Any Special Instructions or
+                            Preferred Timings (Optional)</label>
+                        <textarea id="regMessage" rows="4"
+                            placeholder="Describe any preferred class timing, age of student, or specific requests..."
+                            class="w-full bg-neutral-900 border border-neutral-800 focus:border-gold-500 text-gray-100 rounded-xl p-4 text-sm outline-none transition-all duration-300 resize-none"></textarea>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="pt-2">
+                        <button type="submit"
+                            class="w-full bg-gold-500 hover:bg-gold-600 text-neutral-950 font-bold py-3.5 px-6 rounded-xl tracking-wide text-sm transition-all duration-300 shadow-lg shadow-gold-500/10">
+                            Submit Registration
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Simple Script to Handle Submission (Optional: Redirects to WhatsApp with pre-filled details) -->
+    <script>
+        function handleRegistration(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('regName').value;
+            const phone = document.getElementById('regPhone').value;
+            const course = document.getElementById('regCourse').value;
+            const timezone = document.getElementById('regTimezone').value;
+            const message = document.getElementById('regMessage').value || "No special instructions.";
+
+            // Format message for WhatsApp
+            const waText = `Assalamu Alaikum,\n\nI want to register for a 3-Day Free Trial class at Al Fatima Academy.\n\n` +
+                `ðŸ‘¤ *Name:* ${name}\n` +
+                `ðŸ“ž *WhatsApp:* ${phone}\n` +
+                `ðŸ“š *Course:* ${course}\n` +
+                `ðŸŒ *Country/Timezone:* ${timezone}\n` +
+                `ðŸ“ *Message:* ${message}`;
+
+            const encodedText = encodeURIComponent(waText);
+
+            // Redirects directly to WhatsApp Administrator
+            window.open(`https://wa.me/923075329240?text=${encodedText}`, '_blank');
+        }
+    </script>
+    <!-- Dynamic Translation Gateway -->
+
+    <!-- Dynamic Router Script -->
+    <script>
+        function translateSite(targetLang) {
+            // Yeh script automatic aapki active url (chahe vercel ho ya .com) pick kar lega
+            var currentUrl = window.location.href;
+            var googleTranslateUrl = "https://translate.google.com/translate?sl=en&tl=" + targetLang + "&u=" + encodeURIComponent(currentUrl);
+            window.open(googleTranslateUrl, '_blank');
+        }
+    </script>
+    <!-- ================= FOOTER ================= -->
+    <footer class="bg-neutral-950 py-12 border-t border-gold-500/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <img src="academy logo.jpg" alt="Al Fatima Academy Logo"
+                            class="w-12 h-12 object-contain rounded-full border border-gold-500 bg-black">
+                        <span class="font-serif text-lg font-bold tracking-wider text-gold-gradient block">Al Fatima
+                            Academy</span>
+                    </div>
+                    <p class="text-xs text-gray-500 leading-relaxed">
+                        Spreading the light of the Quran globally. High quality, online Islamic classes using state of
+                        the art tools.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold text-gold-400 mb-4 tracking-wider uppercase">Our Courses</h4>
+                    <ul class="text-xs text-gray-400 space-y-2">
+                        <li><a href="services.html" class="hover:text-gold-500 transition-colors">Madni Qaida
+                            </a></li>
+                        <li><a href="services.html" class="hover:text-gold-500 transition-colors">Tajweed-ul-Quran
+                            </a></li>
+                        <li><a href="services.html" class="hover:text-gold-500 transition-colors">Nazra Quran
+                            </a></li>
+                        <li><a href="services.html" class="hover:text-gold-500 transition-colors">Hadis Nimaz/Basic
+                                Islam
+                            </a></li>
+                    </ul>
+                </div>
+
+                <!-- Divider Line -->
+                <div class="border-t border-neutral-900 w-24 mx-auto"></div>
+                <div>
+                    <h4 class="text-sm font-bold text-gold-400 mb-4 tracking-wider uppercase">Academy Location</h4>
+                    <p class="text-xs text-gray-400 leading-relaxed mb-2">
+                        Lahore, Punjab, Pakistan (Active internationally across UK, US, Arab states and beyond)
+                    </p>
+                    <p class="text-xs text-gold-500 font-bold">
+                        <a href="tel:+923075329240" class="hover:underline">+92 307 5329240</a>
+                    </p>
+                </div>
+            </div>
+            <div
+                class="border-t border-neutral-900 pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500">
+                <p>&copy; 2026 Al Fatima Academy (Al Quran International). All rights reserved.</p>
+                <div class="flex space-x-4 mt-4 sm:mt-0">
+                    <a href="#" class="hover:text-gold-500 transition-colors"><i
+                            class="fa-brands fa-facebook text-base"></i></a>
+                    <a href="#" class="hover:text-gold-500 transition-colors"><i
+                            class="fa-brands fa-whatsapp text-base"></i></a>
+                    <a href="#" class="hover:text-gold-500 transition-colors"><i
+                            class="fa-brands fa-youtube text-base"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ================= FLOATING ACTION BUTTONS ================= -->
+    <!-- Google Translate Hidden Container -->
+    <div id="google_translate_element" style="display:none !important; visibility:hidden !important;"></div>
+
+    <!-- Floating Language Translator Button (Right Side) -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <!-- Floating Main Button -->
+        <button id="floatingLangBtn" onclick="toggleLangPopup()"
+            class="bg-gold-500 hover:bg-gold-600 text-slate-950 p-4 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 transform hover:scale-110 focus:outline-none border-2 border-slate-900"
+            title="Select Language">
+            <i class="fa-solid fa-language text-2xl"></i>
+        </button>
+
+        <!-- Language Selection Popup -->
+        <div id="langPopup"
+            class="hidden absolute bottom-16 right-0 w-64 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-4 text-slate-100 backdrop-blur-md bg-opacity-95 transition-all duration-300">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
+                <h3 class="font-bold text-gold-400 text-sm tracking-wide uppercase"><i
+                        class="fa-solid fa-globe mr-1"></i> Select Language</h3>
+                <span class="text-xs text-slate-400">11 Options</span>
+            </div>
+
+            <!-- Languages List -->
+            <div class="space-y-1 text-sm max-h-72 overflow-y-auto pr-1">
+                <button onclick="changeLanguage('en')"
+                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
+                    <span class="mr-3 text-base">🇬🇧 / 🇨🇦</span> English (UK / Canada)
+                </button>
+                <button onclick="changeLanguage('ur')"
+                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
+                    <span class="mr-3 text-base">🇵🇰</span> Urdu (اردو)
+                </button>
+                <button onclick="changeLanguage('ar')"
+                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
+                    <span class="mr-3 text-base">🇸🇦 / 🇾🇪</span> Arabic (العربية / Yemen)
+                </button>
+                <button onclick="changeLanguage('bn')"
+                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
+                    <span class="mr-3 text-base">🇧🇩</span> Bengali (বাংলা)
+                </button>
+                <button onclick="changeLanguage('hi')"
+                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
+                    <span class="mr-3 text-base">🇮🇳</span> Hindi (हिन्दी)
+                </button>
+                <button onclick="changeLanguage('tr')"
+                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
+                    <span class="mr-3 text-base">🇹🇷</span> Turkish (Türkçe)
+                </button>
+                <button onclick="changeLanguage('zh-CN')"
+                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
+                    <span class="mr-3 text-base">🇨🇳</span> Chinese (中文)
+                </button>
+                <button onclick="changeLanguage('ja')"
+                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
+                    <span class="mr-3 text-base">🇯🇵</span> Japanese (日本語)
+                </button>
+                <button onclick="changeLanguage('ko')"
+                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
+                    <span class="mr-3 text-base">🇰🇷</span> Korean (한국어)
+                </button>
+                <button onclick="changeLanguage('es')"
+                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
+                    <span class="mr-3 text-base">🇪🇸</span> Spanish (Español)
+                </button>
+                <button onclick="changeLanguage('fr')"
+                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
+                    <span class="mr-3 text-base">🇫🇷</span> French (Français)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Google Translate Core Script & Robust Handler -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,ur,ar,bn,hi,tr,zh-CN,ja,ko,es,fr',
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript"
+        src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <script>
+        function toggleLangPopup() {
+            const popup = document.getElementById('langPopup');
+            if (popup) {
+                popup.classList.toggle('hidden');
+            }
+        }
+
+        function changeLanguage(langCode) {
+            // Direct Cookie Set for Google Translate Reliable Switch
+            document.cookie = "googtrans=/en/" + langCode + "; path=/; domain=" + window.location.hostname;
+            document.cookie = "googtrans=/en/" + langCode + "; path=/";
+
+            const select = document.querySelector('.goog-te-combo');
+            if (select) {
+                select.value = langCode;
+                select.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+
+            // Instant reload to apply translation cleanly if select box missed
+            setTimeout(() => {
+                if (!document.querySelector('.goog-te-combo') || document.querySelector('.goog-te-combo').value !== langCode) {
+                    window.location.reload();
+                }
+            }, 300);
+
+            toggleLangPopup();
+        }
+
+        document.addEventListener('click', function (event) {
+            const popup = document.getElementById('langPopup');
+            const btn = document.getElementById('floatingLangBtn');
+            if (popup && btn && !popup.contains(event.target) && !btn.contains(event.target)) {
+                popup.classList.add('hidden');
+            }
+        });
+    </script>
+    </a>
+    <a href="https://wa.me/923075329240?text=Assalam-o-Alaikum,%20I%20want%20to%20apply%20for%20online%20Quran%20classes."
+        target="_blank" rel="noopener"
+        class="w-12 h-12 bg-[#25D366] text-white hover:bg-[#20ba59] rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/30 transition-transform hover:scale-110">
+        <i class="fa-brands fa-whatsapp text-2xl"></i>
+    </a>
+    </div>
+
+    <!-- Floating Navigation Button -->
+    <div class="fixed bottom-6 left-6 z-50">
+        <!-- Floating Button -->
+        <button id="floatingNavBtn" onclick="toggleNavPopup()"
+            class="bg-gold-500 hover:bg-gold-600 text-slate-950 p-4 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 transform hover:scale-110 focus:outline-none border-2 border-slate-900"
+            title="Quick Menu">
+            <i id="navIcon" class="fa-solid fa-bars text-xl"></i>
+        </button>
+
+        <!-- Popup Menu -->
+        <div id="navPopup"
+            class="hidden absolute bottom-16 left-0 w-60 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-4 text-slate-100 backdrop-blur-md bg-opacity-95 transition-all duration-300">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
+                <h3 class="font-bold text-gold-400 text-sm tracking-wide uppercase">Quick Menu</h3>
+                <span class="text-xs text-slate-400">Pages</span>
+            </div>
+
+            <!-- Exact Pages Links -->
+            <ul class="space-y-1 text-sm">
+                <li>
+                    <a href="index.html"
+                        class="flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
+                        <i class="fa-solid fa-house w-6 text-gold-400"></i> Home
+                    </a>
+                </li>
+                <li>
+                    <a href="about.html"
+                        class="flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
+                        <i class="fa-solid fa-circle-info w-6 text-gold-400"></i> About Us
+                    </a>
+                </li>
+                <li>
+                    <a href="services.html"
+                        class="flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
+                        <i class="fa-solid fa-layer-group w-6 text-gold-400"></i> Services
+                    </a>
+                </li>
+                <li>
+                    <a href="packages.html"
+                        class="flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
+                        <i class="fa-solid fa-tags w-6 text-gold-400"></i> Packages
+                    </a>
+                </li>
+                <li>
+                    <a href="quran.html"
+                        class="flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
+                        <i class="fa-solid fa-book-quran w-6 text-gold-400"></i> Read Quran
+                    </a>
+                </li>
+                <li>
+                    <a href="contact.html"
+                        class="flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
+                        <i class="fa-solid fa-envelope w-6 text-gold-400"></i> Contact
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Toggle Logic Script -->
+    <script>
+        function toggleNavPopup() {
+            const popup = document.getElementById('navPopup');
+            const icon = document.getElementById('navIcon');
+
+            popup.classList.toggle('hidden');
+
+            if (popup.classList.contains('hidden')) {
+                icon.className = 'fa-solid fa-bars text-xl';
+            } else {
+                icon.className = 'fa-solid fa-xmark text-xl';
+            }
+        }
+
+        document.addEventListener('click', function (event) {
+            const popup = document.getElementById('navPopup');
+            const btn = document.getElementById('floatingNavBtn');
+
+            if (popup && btn && !popup.contains(event.target) && !btn.contains(event.target)) {
+                popup.classList.add('hidden');
+                document.getElementById('navIcon').className = 'fa-solid fa-bars text-xl';
+            }
+        });
+    </script>
+
+
+
+
+    <!-- Google Translate Script -->
+
+    <!-- ================= MULTI-FUNCTIONAL CORE SCRIPTS ================= -->
+    <script type='text/javascript'>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'ar,ur,en,zh-CN,ko,ja,es,fa,hi,bn',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+
+        function translateLanguage(langCode) {
+            if (!langCode) return;
+            const googleSelect = document.querySelector('.goog-te-combo');
+            if (googleSelect) {
+                googleSelect.value = langCode;
+                googleSelect.dispatchEvent(new Event('change', { bubbles: true }));
+            } else {
+                setTimeout(() => translateLanguage(langCode), 500);
+            }
+        }
+
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            const menuIcon = document.getElementById('menuIcon');
+            if (mobileMenu) {
+                mobileMenu.classList.toggle('hidden');
+                if (menuIcon) {
+                    if (mobileMenu.classList.contains('hidden')) {
+                        menuIcon.className = 'fa-solid fa-bars';
+                    } else {
+                        menuIcon.className = 'fa-solid fa-xmark';
+                    }
+                }
+            }
+        }
+
+        function toggleChat() {
+            const chatBox = document.getElementById('aiChatBox');
+            if (chatBox) chatBox.classList.toggle('hidden');
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const messagesArea = document.getElementById('chatMessages');
+            if (!input || !messagesArea) return;
+            const userText = input.value.trim();
+            if (!userText) return;
+
+            const userBubble = document.createElement('div');
+            userBubble.className = 'bg-neutral-800 self-end p-2.5 rounded-lg max-w-[80%] text-white';
+            userBubble.textContent = userText;
+            messagesArea.appendChild(userBubble);
+
+            input.value = '';
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+
+            setTimeout(() => {
+                const botBubble = document.createElement('div');
+                botBubble.className = 'bg-gold-500/10 border border-gold-500/20 self-start p-2.5 rounded-lg max-w-[80%] text-gray-300';
+
+                let response = 'Jazakallah for reaching out! For instant trial setups or personalized schedule discussions, please press the WhatsApp icon on the bottom left of your screen to directly talk with our administrator.';
+                const query = userText.toLowerCase();
+
+                if (query.includes('course') || query.includes('courses') || query.includes('offer') || query.includes('study') || query.includes('classes')) {
+                    response = 'We offer the following premium Quranic courses:\n\n1. Noorani Qaida (Arabic alphabets and reading foundation)\n2. Tajweed-ul-Quran (Correct pronunciation rules)\n3. Quran Hifz (Flexible Quran Memorization program)\n4. Islamic Supplications (Daily Duas, Prayers/Salah rules, and Sunnah)\n\nWe offer 3 days of free trial classes. Please let me know which one you\'d like to join!';
+                } else if (query.includes('fee') || query.includes('price') || query.includes('charges') || query.includes('cost')) {
+                    response = 'Our fee packages are very budget-friendly and custom-designed based on the number of classes you take per week. Please contact us on WhatsApp (+923075329240) to receive the exact fee plans according to your timezone.';
+                } else if (query.includes('timing') || query.includes('schedule') || query.includes('time') || query.includes('when')) {
+                    response = 'We operate 24/7! Classes can be customized according to any timezone or timeframe that is convenient for you or your kids.';
+                } else if (query.includes('trial') || query.includes('free') || query.includes('apply')) {
+                    response = 'You can register for a 3-day free trial right now by filling out the \'Apply\' form on top of our homepage, or message us directly on WhatsApp (+923075329240 ) for fast scheduling.';
+                }
+
+                botBubble.innerHTML = response.replace(/\n/g, '<br>');
+                messagesArea.appendChild(botBubble);
+                messagesArea.scrollTop = messagesArea.scrollHeight;
+            }, 800);
+        }
+    </script>
+    <script type='text/javascript'
+        src='https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit'></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuBtn = document.getElementById('mobileMenuBtn');
+            const dropdownMenu = document.getElementById('mobileDropdownMenu');
+            const hamburgerIcon = document.getElementById('hamburgerIcon');
+            const closeIcon = document.getElementById('closeIcon');
+            if (menuBtn && dropdownMenu) {
+                menuBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    dropdownMenu.classList.toggle('hidden');
+                    hamburgerIcon.classList.toggle('hidden');
+                    closeIcon.classList.toggle('hidden');
+                });
+                document.addEventListener('click', () => {
+                    if (!dropdownMenu.classList.contains('hidden')) {
+                        dropdownMenu.classList.add('hidden');
+                        hamburgerIcon.classList.remove('hidden');
+                        closeIcon.classList.add('hidden');
+                    }
+                });
+            }
+        });
+    </script>
+    <!-- ================= AUTOMATED FOOTER ADDITION ================= -->
+    <footer class="bg-neutral-950 border-t border-gold-500/10 py-6 text-center text-xs text-gray-500 w-full clear-both">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-2">
+            <p class="font-semibold text-gray-400 tracking-wider">&copy; 2026 Al Fatima Academy. All Rights
+                Reserved.
+            </p>
+            <p class="text-[10px] uppercase tracking-widest text-neutral-600">A Project of Al Quran International</p>
+        </div>
+    </footer>
+</body>
+
+</html>
