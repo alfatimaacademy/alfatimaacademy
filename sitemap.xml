@@ -32,4 +32,8 @@
     <loc>https://alfatimaacademy.com/terms-and-conditions.html</loc>
     <priority>0.80</priority>
   </url>
+  <url>
+    <loc>https://alfatimaacademy.com/blog.html</loc>
+    <priority>0.80</priority>
+  </url>
 </urlset>
