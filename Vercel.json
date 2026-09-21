@@ -1,11 +1,4 @@
 {
-  "cleanUrls": true,
-  "trailingSlash": false,
-  "redirects": [
-    {
-      "source": "/:path*.html",
-      "destination": "/:path*",
-      "permanent": 301
-    }
-  ]
+  "buildCommand": "npm run build",
+  "outputDirectory": "."
 }
