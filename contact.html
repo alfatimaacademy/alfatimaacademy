@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 
 <head>
@@ -535,6 +535,76 @@
     <script type='text/javascript'
         src='https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit'></script>
 
-</body>
+    <!-- ================= FLOATING ACTION BUTTONS ================= -->
+    <!-- Google Translate Hidden Container -->
+    <div id="google_translate_element" style="display:none !important; visibility:hidden !important;"></div>
 
+    <!-- Floating Language Translator Button (Right Side) -->
+    <div class="fixed bottom-24 right-6 z-50">
+        <!-- Floating Main Button -->
+        <button id="floatingLangBtn" onclick="toggleLangPopup()"
+            class="bg-gold-500 hover:bg-gold-600 text-slate-950 p-4 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 transform hover:scale-110 focus:outline-none border-2 border-slate-900"
+            title="Select Language">
+            <i class="fa-solid fa-language text-2xl"></i>
+        </button>
+
+        <!-- Language Selection Popup -->
+        <div id="langPopup"
+            class="hidden absolute bottom-16 right-0 w-64 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-4 text-slate-100 backdrop-blur-md bg-opacity-95 transition-all duration-300">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
+                <h3 class="font-bold text-gold-400 text-sm tracking-wide uppercase"><i
+                        class="fa-solid fa-globe mr-1"></i> Select Language</h3>
+                <span class="text-xs text-slate-400">11 Options</span>
+            </div>
+
+            <!-- Languages List -->
+            <div class="space-y-1 text-sm max-h-72 overflow-y-auto pr-1">
+                <button onclick="changeLanguage('en')"
+                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
+                    <span class="mr-3 text-base">🇬🇧 / 🇨🇦</span> English (UK / Canada)
+                </button>
+                <button onclick="changeLanguage('ur')"
+                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
+                    <span class="mr-3 text-base">🇵🇰</span> Urdu (اردو)
+                </button>
+                <button onclick="changeLanguage('ar')"
+                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
+                    <span class="mr-3 text-base">🇸🇦 / 🇾🇪</span> Arabic (العربية / Yemen)
+                </button>
+                <button onclick="changeLanguage('bn')"
+                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
+                    <span class="mr-3 text-base">🇧🇩</span> Bengali (বাংলা)
+                </button>
+                <button onclick="changeLanguage('hi')"
+                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
+                    <span class="mr-3 text-base">🇮🇳</span> Hindi (हिन्दी)
+                </button>
+                <button onclick="changeLanguage('tr')"
+                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
+                    <span class="mr-3 text-base">🇹🇷</span> Turkish (Türkçe)
+                </button>
+                <button onclick="changeLanguage('zh-CN')"
+                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
+                    <span class="mr-3 text-base">🇨🇳</span> Chinese (中文)
+                </button>
+                <button onclick="changeLanguage('ja')"
+                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
+                    <span class="mr-3 text-base">🇯🇵</span> Japanese (日本語)
+                </button>
+                <button onclick="changeLanguage('ko')"
+                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
+                    <span class="mr-3 text-base">🇰🇷</span> Korean (한국어)
+                </button>
+                <button onclick="changeLanguage('es')"
+                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
+                    <span class="mr-3 text-base">🇪🇸</span> Spanish (Español)
+                </button>
+                <button onclick="changeLanguage('fr')"
+                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
+                    <span class="mr-3 text-base">🇫🇷</span> French (Français)
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
 </html>
