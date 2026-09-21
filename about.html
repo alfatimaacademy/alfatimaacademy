@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 
 <head>
@@ -114,83 +114,9 @@
 <body class="bg-neutral-950 text-gray-100 font-sans selection:bg-gold-500 selection:text-black">
 
     <!-- ================= HEADER SECTION ================= -->
-    <header class="sticky top-0 z-40 bg-neutral-950/90 backdrop-blur-md border-b border-gold-500/20">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-20">
-            <!-- Logo & Title -->
-            <div class="flex items-center space-x-3">
-                <img src="academy logo.jpg" alt="Al Fatima Academy Logo"
-                    class="w-14 h-14 object-contain rounded-full border border-gold-500/30 bg-black">
-                <div>
-                    <span class="font-serif text-lg md:text-xl font-bold tracking-wider text-gold-gradient block">Al
-                        Fatima Academy</span>
-                    <span class="text-[9px] uppercase tracking-widest text-gray-400 block -mt-1">A Project of Al
-                        Quran International</span>
-                </div>
-            </div>
-
-            <!-- Navigation Links (Desktop) -->
-            <nav class="hidden md:flex items-center space-x-8 text-sm font-semibold tracking-wide">
-                <a href="index.html" class="hover:text-gold-500 transition-colors">Home</a>
-                <a href="about.html" class="hover:text-gold-500 transition-colors text-gold-500">About Us</a>
-                <!-- Services Hover Dropdown -->
-                <div class="relative group py-3">
-                    <a href="javascript:void(0)" class="hover:text-gold-500 flex items-center gap-1 transition-colors">
-                        Services
-                        <svg class="w-3.5 h-3.5 mt-0.5 transition-transform duration-200 group-hover:rotate-180"
-                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </a>
-                    <div
-                        class="absolute top-full left-1/2 -translate-x-1/2 mt-0 w-64 bg-neutral-900/95 backdrop-blur-md border border-gold-500/25 rounded-2xl shadow-2xl shadow-black/60 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 translate-y-1 group-hover:translate-y-0 z-50 overflow-hidden pointer-events-none group-hover:pointer-events-auto">
-                        <div class="p-1.5">
-                            <a href="services.html#noorani-qaida"
-                                onclick="sessionStorage.setItem('openService','noorani-qaida')"
-                                class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:text-gold-400 hover:bg-gold-500/10 transition-all text-sm font-medium">
-                                <i class="fa-solid fa-book-open text-gold-500 w-4"></i> Noorani Qaida Course
-                            </a>
-                            <a href="services.html#tajweed-quran"
-                                onclick="sessionStorage.setItem('openService','tajweed-quran')"
-                                class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:text-gold-400 hover:bg-gold-500/10 transition-all text-sm font-medium">
-                                <i class="fa-solid fa-microphone text-gold-500 w-4"></i> Tajweed-ul-Quran Course
-                            </a>
-                            <a href="services.html#hifz-quran"
-                                onclick="sessionStorage.setItem('openService','hifz-quran')"
-                                class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:text-gold-400 hover:bg-gold-500/10 transition-all text-sm font-medium">
-                                <i class="fa-solid fa-heart text-gold-500 w-4"></i> Quran Memorization (Hifz)
-                            </a>
-                            <a href="services.html#islamic-duas"
-                                onclick="sessionStorage.setItem('openService','islamic-duas')"
-                                class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:text-gold-400 hover:bg-gold-500/10 transition-all text-sm font-medium">
-                                <i class="fa-solid fa-star text-gold-500 w-4"></i> Islamic Supplications & Etiquette
-                            </a>
-                        </div>
-
-                    </div>
-                </div>
-                <a href="packages.html" class="hover:text-gold-400 transition-colors">Packages</a>
-                <a href="quran.html" class="hover:text-gold-500 transition-colors">Read Quran</a>
-                <a href="contact.html" class="hover:text-gold-500 transition-colors">Contact</a>
-            </nav>
-
-            <!-- Phone & Language Dropdown -->
-            <div class="flex items-center space-x-4">
-                <a href="tel:+923075329240"
-                    class="hidden lg:flex items-center space-x-2 text-xs font-bold border border-gold-500/30 px-3 py-1.5 rounded-full bg-gold-500/5 hover:bg-gold-500/20 transition-all text-gold-400">
-                    <i class="fa-solid fa-phone"></i>
-                    <span>+923075329240</span>
-                </a>
-
-                <!-- Hidden Google Translate Element Container -->
-
-                <!-- Customized Language Dropdown -->
-
-            </div>
-        </div>
-    </div>
-</header>
+    <!-- ================= HEADER (Dynamic Component) ================= -->
+    <div id="header-placeholder"></div>
+    <script src="components-loader.js"></script>
 
     <!-- ================= HERO SECTION ================= -->
     <!-- ================= LIBRARY & ENVIRONMENT SECTION ================= -->
@@ -435,73 +361,8 @@
     </div>
 
     <!-- Dynamic Router Script -->
-    <!-- ================= FOOTER ================= -->
-    <footer class="bg-neutral-950 py-12 border-t border-gold-500/20">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-            <!-- Col 1: Logo & Mission -->
-            <div class="space-y-4">
-                <div class="flex items-center space-x-3">
-                    <img src="academy logo.jpg" alt="Al Fatima Academy Logo"
-                        class="w-12 h-12 object-contain rounded-full border border-gold-500 bg-black">
-                    <span class="font-serif text-lg font-bold tracking-wider text-gold-gradient block">Al Fatima
-                        Academy</span>
-                </div>
-                <p class="text-xs text-gray-500 leading-relaxed">
-                    Spreading the light of the Quran globally. High quality, online Islamic classes using state of
-                    the art tools.
-                </p>
-            </div>
-
-            <!-- Col 2: Quick Links -->
-            <div>
-                <h4 class="text-sm font-bold text-gold-400 mb-4 tracking-wider uppercase">Quick Links</h4>
-                <ul class="text-xs text-gray-400 space-y-2">
-                    <li><a href="index.html" class="hover:text-gold-500 transition-colors">Home</a></li>
-                    <li><a href="about.html" class="hover:text-gold-500 transition-colors">About Us</a></li>
-                    <li><a href="packages.html" class="hover:text-gold-500 transition-colors">Packages</a></li>
-                    <li><a href="quran.html" class="hover:text-gold-500 transition-colors">Read Quran</a></li>
-                    <li><a href="contact.html" class="hover:text-gold-500 transition-colors">Contact</a></li>
-                </ul>
-            </div>
-
-            <!-- Col 3: Our Courses -->
-            <div>
-                <h4 class="text-sm font-bold text-gold-400 mb-4 tracking-wider uppercase">Our Courses</h4>
-                <ul class="text-xs text-gray-400 space-y-2">
-                    <li><a href="services.html#noorani-qaida"
-                            onclick="sessionStorage.setItem('openService','noorani-qaida'); if(typeof showServiceSection === 'function') showServiceSection('noorani-qaida');"
-                            class="hover:text-gold-500 transition-colors">Noorani Qaida Course</a></li>
-                    <li><a href="services.html#tajweed-quran"
-                            onclick="sessionStorage.setItem('openService','tajweed-quran'); if(typeof showServiceSection === 'function') showServiceSection('tajweed-quran');"
-                            class="hover:text-gold-500 transition-colors">Tajweed-ul-Quran Course</a></li>
-                    <li><a href="services.html#hifz-quran"
-                            onclick="sessionStorage.setItem('openService','hifz-quran'); if(typeof showServiceSection === 'function') showServiceSection('hifz-quran');"
-                            class="hover:text-gold-500 transition-colors">Quran Memorization (Hifz)</a></li>
-                    <li><a href="services.html#islamic-duas"
-                            onclick="sessionStorage.setItem('openService','islamic-duas'); if(typeof showServiceSection === 'function') showServiceSection('islamic-duas');"
-                            class="hover:text-gold-500 transition-colors">Islamic Supplications & Etiquette</a></li>
-                </ul>
-            </div>
-
-            <!-- Col 4: Contact & Location -->
-            <div>
-                <h4 class="text-sm font-bold text-gold-400 mb-4 tracking-wider uppercase">Academy Location</h4>
-                <p class="text-xs text-gray-400 leading-relaxed mb-2">
-                    Lahore, Punjab, Pakistan (Active internationally across UK, US, Arab states and beyond)
-                </p>
-                <p class="text-xs text-gold-500 font-bold">
-                    <a href="tel:+923075329240" class="hover:underline">+92 307 5329240</a>
-                </p>
-            </div>
-        </div>
-
-        <div
-            class="border-t border-neutral-900 pt-8 flex flex-col items-center justify-center text-center text-xs text-gray-500">
-            <p>&copy; 2026 Al Fatima Academy (Al Quran International). All rights reserved.</p>
-        </div>
-    </div>
-</footer>
+    <!-- ================= FOOTER (Dynamic Component) ================= -->
+    <div id="footer-placeholder"></div>
 
     <!-- ================= FLOATING ACTION BUTTONS ================= -->
     <!-- Google Translate Hidden Container -->

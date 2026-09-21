@@ -1,0 +1,19 @@
+{
+  "name": "online-quran-academy",
+  "version": "1.0.0",
+  "description": "Online Quran Academy website build tools",
+  "scripts": {
+    "dev":         "npx serve . --listen 3000 --no-clipboard",
+    "build":       "node scripts/build.js",
+    "replace-cdn": "node scripts/replace-cdn.js",
+    "restore-cdn": "node scripts/restore-cdn.js",
+    "css:watch":   "tailwindcss -i ./input.css -o ./style.css --watch",
+    "css:build":   "tailwindcss -i ./input.css -o ./style.css --minify"
+  },
+  "dependencies": {
+    "glob": "^10.4.5"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.1"
+  }
+}

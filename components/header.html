@@ -15,11 +15,12 @@
 
             <!-- Navigation Links (Desktop) -->
             <nav class="hidden md:flex items-center space-x-8 text-sm font-semibold tracking-wide">
-                <a href="index.html" class="hover:text-gold-500 transition-colors">Home</a>
-                <a href="about.html" class="hover:text-gold-500 transition-colors">About Us</a>
+                <a href="index.html" data-nav="index.html" class="nav-link hover:text-gold-500 transition-colors">Home</a>
+                <a href="about.html" data-nav="about.html" class="nav-link hover:text-gold-500 transition-colors">About Us</a>
                 <!-- Services Hover Dropdown -->
                 <div class="relative group py-3">
-                    <a href="javascript:void(0)" class="hover:text-gold-500 flex items-center gap-1 transition-colors">
+                    <a href="javascript:void(0)" data-nav="services.html"
+                        class="nav-link hover:text-gold-500 flex items-center gap-1 transition-colors">
                         Services
                         <svg class="w-3.5 h-3.5 mt-0.5 transition-transform duration-200 group-hover:rotate-180"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -48,15 +49,14 @@
                             <a href="services.html#islamic-duas"
                                 onclick="sessionStorage.setItem('openService','islamic-duas')"
                                 class="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:text-gold-400 hover:bg-gold-500/10 transition-all text-sm font-medium">
-                                <i class="fa-solid fa-star text-gold-500 w-4"></i> Islamic Supplications & Etiquette
+                                <i class="fa-solid fa-star text-gold-500 w-4"></i> Islamic Supplications &amp; Etiquette
                             </a>
                         </div>
-
                     </div>
                 </div>
-                <a href="packages.html" class="hover:text-gold-400 transition-colors">Packages</a>
-                <a href="quran.html" class="hover:text-gold-500 transition-colors">Read Quran</a>
-                <a href="contact.html" class="hover:text-gold-500 transition-colors">Contact</a>
+                <a href="packages.html" data-nav="packages.html" class="nav-link hover:text-gold-400 transition-colors">Packages</a>
+                <a href="quran.html" data-nav="quran.html" class="nav-link hover:text-gold-500 transition-colors">Read Quran</a>
+                <a href="contact.html" data-nav="contact.html" class="nav-link hover:text-gold-500 transition-colors">Contact</a>
             </nav>
 
             <!-- Phone & Language Dropdown -->
@@ -66,11 +66,8 @@
                     <i class="fa-solid fa-phone"></i>
                     <span>+923075329240</span>
                 </a>
-
                 <!-- Hidden Google Translate Element Container -->
-
                 <!-- Customized Language Dropdown -->
-
             </div>
         </div>
     </div>
