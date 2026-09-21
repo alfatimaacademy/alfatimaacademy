@@ -13,7 +13,8 @@
 
 (function () {
   // ── Determine current page filename ──────────────────────────
-  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+  let currentPage = window.location.pathname.replace(/\/+$/, '').replace(/\.html$/, '') || '/';
+  if (currentPage === '/index') currentPage = '/';
 
   // ── Helper: fetch an HTML file and return its text ───────────
   async function loadComponent(url) {
@@ -42,8 +43,8 @@
   async function loadComponents() {
     try {
       const [headerHtml, footerHtml] = await Promise.all([
-        loadComponent('components/header.html'),
-        loadComponent('components/footer.html')
+        loadComponent('/components/header.html'),
+        loadComponent('/components/footer.html')
       ]);
 
       inject('header-placeholder', headerHtml);
