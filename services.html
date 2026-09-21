@@ -461,82 +461,40 @@
 
     <!-- JavaScript for Service Panel Logic -->
     <script>
+        const VALID_SERVICES = ['noorani-qaida', 'tajweed-quran', 'hifz-quran', 'islamic-duas'];
+        const DEFAULT_SERVICE = 'noorani-qaida';
+
+        // Show ONLY the selected course. Everything else on the page body is hidden.
         function showServiceSection(serviceId) {
-            // Hide other sections to only show the requested content
-            const hero = document.getElementById('services-hero');
-            if (hero) hero.classList.add('hidden');
+            try { sessionStorage.removeItem('openService'); } catch (e) {}
+            if (!VALID_SERVICES.includes(serviceId)) serviceId = DEFAULT_SERVICE;
 
-            const courses = document.getElementById('courses-section');
-            if (courses) courses.classList.add('hidden');
+            ['services-hero', 'courses-section', 'registration-section'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
 
-            const regForm = document.getElementById('registration-section');
-            if (regForm) regForm.classList.add('hidden');
-
-            // Show the outer section
-            const section = document.getElementById('service-detail-section');
-            section.classList.remove('hidden');
-
-            // Hide all panels
+            document.getElementById('service-detail-section').classList.remove('hidden');
             document.querySelectorAll('.service-panel').forEach(p => p.classList.add('hidden'));
 
-            // Show the requested panel
             const panel = document.getElementById('panel-' + serviceId);
             if (panel) {
                 panel.classList.remove('hidden');
-                // Scroll to top
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
 
-        function closeServiceSection() {
-            // Hide the detailed section
-            document.getElementById('service-detail-section').classList.add('hidden');
-            document.querySelectorAll('.service-panel').forEach(p => p.classList.add('hidden'));
-
-            // Show all other sections again
-            const hero = document.getElementById('services-hero');
-            if (hero) hero.classList.remove('hidden');
-
-            const courses = document.getElementById('courses-section');
-            if (courses) courses.classList.remove('hidden');
-
-            const regForm = document.getElementById('registration-section');
-            if (regForm) regForm.classList.remove('hidden');
-
-            // Scroll back to top of courses grid
-            if (courses) {
-                courses.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }
-
-        // Auto-open panel if navigated from another page
-
-        // Listen for URL hash changes (for native back button and hash links)
+        // Dropdown link clicked while already on this page (#hash changes)
         window.addEventListener('hashchange', () => {
-            const hash = window.location.hash.replace('#', '');
-            const validServices = ['noorani-qaida', 'tajweed-quran', 'hifz-quran', 'islamic-duas'];
-            if (validServices.includes(hash)) {
-                showServiceSection(hash);
-            } else if (!hash) {
-                closeServiceSection();
-            }
+            showServiceSection(window.location.hash.replace('#', ''));
         });
 
+        // On page load: open the course chosen in the dropdown (from any page)
         document.addEventListener('DOMContentLoaded', () => {
-            // Check sessionStorage first (set by dropdowns in other pages)
-            const serviceToOpen = sessionStorage.getItem('openService');
-            if (serviceToOpen) {
-                // Short timeout to ensure DOM is fully ready before hiding/showing
-                setTimeout(() => showServiceSection(serviceToOpen), 50);
-                sessionStorage.removeItem('openService');
-                return;
-            }
-
-            // Fallback: check URL hash (e.g. services.html#noorani-qaida)
-            const hash = window.location.hash.replace('#', '');
-            if (['noorani-qaida', 'tajweed-quran', 'hifz-quran', 'islamic-duas'].includes(hash)) {
-                setTimeout(() => showServiceSection(hash), 50);
-            }
+            let target = null;
+            try { target = sessionStorage.getItem('openService'); } catch (e) {}
+            if (!VALID_SERVICES.includes(target)) target = window.location.hash.replace('#', '');
+            showServiceSection(target);   // falls back to the first course if nothing valid
         });
     </script>
 
@@ -636,11 +594,11 @@
 
             // Format message for WhatsApp
             const waText = `Assalamu Alaikum,\n\nI want to register for a 3-Day Free Trial class at Al Fatima Academy.\n\n` +
-                `ðŸ‘¤ *Name:* ${name}\n` +
-                `ðŸ“ž *WhatsApp:* ${phone}\n` +
-                `ðŸ“š *Course:* ${course}\n` +
-                `ðŸŒ *Country/Timezone:* ${timezone}\n` +
-                `ðŸ“ *Message:* ${message}`;
+                `👤 *Name:* ${name}\n` +
+                `📞 *WhatsApp:* ${phone}\n` +
+                `📚 *Course:* ${course}\n` +
+                `🌍 *Country/Timezone:* ${timezone}\n` +
+                `📝 *Message:* ${message}`;
 
             const encodedText = encodeURIComponent(waText);
 

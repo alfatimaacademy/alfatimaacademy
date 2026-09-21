@@ -39,6 +39,15 @@
     });
   }
 
+  // ── Services: hover opens the dropdown, clicking "Services" itself does nothing ─
+  function lockServicesLink() {
+    document.querySelectorAll('a[data-nav="/services"]').forEach(a => {
+      a.setAttribute('href', 'javascript:void(0)');
+      a.style.cursor = 'default';
+      a.addEventListener('click', e => e.preventDefault());
+    });
+  }
+
   // ── Main loader ───────────────────────────────────────────────
   async function loadComponents() {
     try {
@@ -52,6 +61,7 @@
 
       // Highlight active nav link after header is injected
       highlightActiveLink();
+      lockServicesLink();
 
     } catch (err) {
       console.warn('[ComponentLoader] Could not load components:', err.message);
