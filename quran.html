@@ -94,6 +94,7 @@
                     fontFamily: {
                         sans: ['Poppins', 'sans-serif'],
                         serif: ['Cinzel', 'serif'],
+                        quran: ['Amiri', 'serif'],
                     },
                     colors: {
                         gold: {
@@ -188,8 +189,8 @@
             </div>
 
             <!-- Quran Text Render Box -->
-            <div id="quranDisplayBox"
-                class="min-h-[400px] bg-gray-50 rounded-2xl p-6 md:p-10 border border-gray-200 hidden text-center text-gray-900">
+            <div id="quranDisplayBox" translate="no"
+                class="notranslate min-h-[400px] bg-gray-50 rounded-2xl p-6 md:p-10 border border-gray-200 hidden text-center text-gray-900">
                 <div id="readerHeader" class="mb-8 border-b border-gray-200 pb-4">
                     <h2 id="readerTitle" class="text-xl font-serif font-bold text-gray-800">Please Select an option
                         above</h2>
@@ -207,12 +208,24 @@
                 </div>
             </div>
 
+
             <!-- Empty State -->
             <div id="emptyState" class="text-center py-24 space-y-4">
                 <div class="text-gray-300 text-5xl"><i class="fa-solid fa-book-quran"></i></div>
                 <h3 class="text-lg font-serif font-bold text-gray-700">No Para or Surah Selected</h3>
                 <p class="text-xs text-gray-500 max-w-xs mx-auto">Please choose a Para (Juz) or Surah from the dropdown
                     controls above to start reading.</p>
+            </div>
+
+            <!-- Error State (shown if the Quran text could not be loaded) -->
+            <div id="errorState" class="hidden text-center py-24 space-y-4">
+                <div class="text-red-400 text-5xl"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <h3 class="text-lg font-serif font-bold text-gray-700">Could not load the Quran text</h3>
+                <p id="errorDetail" class="text-xs text-gray-500 max-w-md mx-auto"></p>
+                <button type="button" onclick="retryLastLoad()"
+                    class="bg-gold-500 hover:bg-gold-600 text-black font-semibold text-sm px-6 py-2 rounded-full transition-colors">
+                    <i class="fa-solid fa-rotate-right mr-1"></i> Try Again
+                </button>
             </div>
 
         </div>
@@ -590,80 +603,264 @@
             }
         }
 
-        function loadJuz(juzNum) {
-            if (!juzNum) return;
-            // Clear other selector
-            document.getElementById('surahSelect').value = "";
+        // ================= PARA (JUZ) & SURAH LISTS =================
+        const JUZ_NAMES = [
+            "Alif Laam Meem", "Sayaqool", "Tilkal Rusul", "Lan Tanaloo", "Wal Muhsanat",
+            "La Yuhibbullah", "Wa Iza Samiu", "Wa Lau Annana", "Qalal Malao", "Wa A'lamu",
+            "Yatazeroon", "Wa Mamin Dabbah", "Wa Ma Ubrioo", "Rubama", "Subhanallazi",
+            "Qala Alam", "Iqtarabo", "Qadd Aflaha", "Wa Qalallazina", "A'man Khalaq",
+            "Utlu Ma Oohi", "Wa Manyaqnut", "Wa Mali", "Faman Azlam", "Ilayhi Yuraddu",
+            "Ha Meem", "Qala Fama Khatbukum", "Qadd Sami Allah", "Tabarakallazi", "Amma"
+        ];
 
+        const SURAH_NAMES = [
+            "Al-Fatihah", "Al-Baqarah", "Ali 'Imran", "An-Nisa", "Al-Ma'idah", "Al-An'am", "Al-A'raf", "Al-Anfal",
+            "At-Tawbah", "Yunus", "Hud", "Yusuf", "Ar-Ra'd", "Ibrahim", "Al-Hijr", "An-Nahl", "Al-Isra", "Al-Kahf",
+            "Maryam", "Ta-Ha", "Al-Anbiya", "Al-Hajj", "Al-Mu'minun", "An-Nur", "Al-Furqan", "Ash-Shu'ara",
+            "An-Naml", "Al-Qasas", "Al-'Ankabut", "Ar-Rum", "Luqman", "As-Sajdah", "Al-Ahzab", "Saba", "Fatir",
+            "Ya-Sin", "As-Saffat", "Sad", "Az-Zumar", "Ghafir", "Fussilat", "Ash-Shura", "Az-Zukhruf", "Ad-Dukhan",
+            "Al-Jathiyah", "Al-Ahqaf", "Muhammad", "Al-Fath", "Al-Hujurat", "Qaf", "Adh-Dhariyat", "At-Tur",
+            "An-Najm", "Al-Qamar", "Ar-Rahman", "Al-Waqi'ah", "Al-Hadid", "Al-Mujadila", "Al-Hashr", "Al-Mumtahanah",
+            "As-Saff", "Al-Jumu'ah", "Al-Munafiqun", "At-Taghabun", "At-Talaq", "At-Tahrim", "Al-Mulk", "Al-Qalam",
+            "Al-Haqqah", "Al-Ma'arij", "Nuh", "Al-Jinn", "Al-Muzzammil", "Al-Muddaththir", "Al-Qiyamah", "Al-Insan",
+            "Al-Mursalat", "An-Naba", "An-Nazi'at", "'Abasa", "At-Takwir", "Al-Infitar", "Al-Mutaffifin",
+            "Al-Inshiqaq", "Al-Buruj", "At-Tariq", "Al-A'la", "Al-Ghashiyah", "Al-Fajr", "Al-Balad", "Ash-Shams",
+            "Al-Layl", "Ad-Duha", "Ash-Sharh", "At-Tin", "Al-'Alaq", "Al-Qadr", "Al-Bayyinah", "Az-Zalzalah",
+            "Al-'Adiyat", "Al-Qari'ah", "At-Takathur", "Al-'Asr", "Al-Humazah", "Al-Fil", "Quraysh", "Al-Ma'un",
+            "Al-Kawthar", "Al-Kafirun", "An-Nasr", "Al-Masad", "Al-Ikhlas", "Al-Falaq", "An-Nas"
+        ];
+
+        function populateSelectors() {
+            const juzSel = document.getElementById('juzSelect');
+            const surahSel = document.getElementById('surahSelect');
+
+            if (juzSel && juzSel.options.length <= 1) {
+                JUZ_NAMES.forEach((name, i) => {
+                    const opt = document.createElement('option');
+                    opt.value = i + 1;
+                    opt.textContent = `Para ${i + 1} - ${name}`;
+                    juzSel.appendChild(opt);
+                });
+            }
+
+            if (surahSel && surahSel.options.length <= 1) {
+                SURAH_NAMES.forEach((name, i) => {
+                    const opt = document.createElement('option');
+                    opt.value = i + 1;
+                    opt.textContent = `${i + 1}. ${name}`;
+                    surahSel.appendChild(opt);
+                });
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', populateSelectors);
+        } else {
+            populateSelectors();
+        }
+
+        // ================= LOADING QURAN TEXT =================
+        const BISMILLAH_TEXT = "بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيمِ";
+        let lastRequest = 0;
+        let lastLoad = null;          // remembers what to retry
+
+        // fetch() with a timeout, so the page never hangs on a slow / blocked API
+        async function fetchJson(url, ms = 15000) {
+            const ctrl = new AbortController();
+            const timer = setTimeout(() => ctrl.abort(), ms);
+            try {
+                const res = await fetch(url, { signal: ctrl.signal });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return await res.json();
+            } finally {
+                clearTimeout(timer);
+            }
+        }
+
+        // Every source is converted to the same simple shape:
+        // { title, ayahs: [ { surahNo, surahAr, surahEn, n, text } ] }
+        async function fromAlQuranCloud(kind, num) {
+            const json = await fetchJson(`https://api.alquran.cloud/v1/${kind}/${num}/quran-uthmani`);
+            if (json.code !== 200 || !json.data || !json.data.ayahs) throw new Error('alquran.cloud: bad response');
+            const d = json.data;
+            if (kind === 'juz') {
+                return {
+                    title: `Para ${num} - ${JUZ_NAMES[num - 1]}`,
+                    ayahs: d.ayahs.map(a => ({
+                        surahNo: a.surah.number, surahAr: a.surah.name, surahEn: a.surah.englishName,
+                        n: a.numberInSurah, text: a.text
+                    }))
+                };
+            }
+            return {
+                title: `${d.englishName} (${d.name})`,
+                ayahs: d.ayahs.map(a => ({
+                    surahNo: d.number, surahAr: d.name, surahEn: d.englishName,
+                    n: a.numberInSurah, text: a.text
+                }))
+            };
+        }
+
+        // Backup source, used automatically if the first one fails
+        async function fromQuranCom(kind, num) {
+            const param = kind === 'juz' ? 'juz_number' : 'chapter_number';
+            const json = await fetchJson(`https://api.quran.com/api/v4/quran/verses/uthmani?${param}=${num}`);
+            if (!json.verses || !json.verses.length) throw new Error('quran.com: bad response');
+            const ayahs = json.verses.map(v => {
+                const [sNo, aNo] = v.verse_key.split(':').map(Number);
+                return { surahNo: sNo, surahAr: '', surahEn: SURAH_NAMES[sNo - 1], n: aNo, text: v.text_uthmani };
+            });
+            return {
+                title: kind === 'juz' ? `Para ${num} - ${JUZ_NAMES[num - 1]}` : `${SURAH_NAMES[num - 1]}`,
+                ayahs
+            };
+        }
+
+        async function loadQuran(kind, num) {
+            try {
+                return await fromAlQuranCloud(kind, num);
+            } catch (e1) {
+                console.warn('Primary Quran API failed, trying backup...', e1);
+                try {
+                    return await fromQuranCom(kind, num);
+                } catch (e2) {
+                    console.error('Backup Quran API failed too', e2);
+                    throw new Error(`${e1.message} / ${e2.message}`);
+                }
+            }
+        }
+
+        function startLoad(kind, num) {
+            const token = ++lastRequest;
+            lastLoad = { kind, num };
             showLoading(true);
 
-            fetch(`https://api.alquran.cloud/v1/juz/${juzNum}/quran-uthmani`)
-                .then(res => res.json())
-                .then(data => {
-                    displayQuranData(`Para (Juz) ${juzNum}`, data.data.ayahs, false);
+            loadQuran(kind, num)
+                .then(result => {
+                    if (token !== lastRequest) return;      // user already picked something else
+                    displayQuranData(result.title, result.ayahs, { isJuz: kind === 'juz' });
                 })
                 .catch(err => {
-                    alert("Failed to fetch Quran text. Please check your internet connection.");
-                    showLoading(false);
+                    if (token !== lastRequest) return;
+                    showLoadError(err);
                 });
+        }
+
+        function loadJuz(juzNum) {
+            if (!juzNum) return;
+            document.getElementById('surahSelect').value = "";   // clear other selector
+            startLoad('juz', Number(juzNum));
         }
 
         function loadSurah(surahNum) {
             if (!surahNum) return;
-            // Clear other selector
-            document.getElementById('juzSelect').value = "";
-
-            showLoading(true);
-
-            fetch(`https://api.alquran.cloud/v1/surah/${surahNum}/quran-uthmani`)
-                .then(res => res.json())
-                .then(data => {
-                    // Show Bismillah only if it's not Fatiha (Surah 1) or Taubah (Surah 9)
-                    const showBismillah = (surahNum != 1 && surahNum != 9);
-                    displayQuranData(`${data.data.englishName} (${data.data.name})`, data.data.ayahs, showBismillah);
-                })
-                .catch(err => {
-                    alert("Failed to fetch Quran text. Please check your internet connection.");
-                    showLoading(false);
-                });
+            document.getElementById('juzSelect').value = "";     // clear other selector
+            startLoad('surah', Number(surahNum));
         }
 
-        function displayQuranData(title, ayahs, showBis) {
-            const container = document.getElementById('versesContainer');
-            const bismillah = document.getElementById('bismillah');
-            const titleElem = document.getElementById('readerTitle');
+        function retryLastLoad() {
+            if (lastLoad) startLoad(lastLoad.kind, lastLoad.num);
+        }
 
-            titleElem.textContent = title;
-            container.innerHTML = "";
+        function showLoadError(err) {
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('quranDisplayBox').classList.add('hidden');
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('errorDetail').textContent =
+                'Please check your internet connection and try again. (' + (err && err.message ? err.message : 'unknown error') + ')';
+            document.getElementById('errorState').classList.remove('hidden');
+        }
 
-            if (showBis) {
-                bismillah.classList.remove('hidden');
-            } else {
-                bismillah.classList.add('hidden');
+        // Remove the diacritics so we can safely recognise the Bismillah at the start of an ayah
+        function plainArabic(t) {
+            return t.replace(/[\u064B-\u065F\u0670\u06D6-\u06ED\uFEFF\u200E\u200F]/g, '');
+        }
+
+        // The API puts the Bismillah (4 words) inside ayah 1 of every surah except Al-Fatihah and At-Tawbah
+        function removeBismillah(text) {
+            const words = text.trim().split(/\s+/);
+            if (words.length > 4 && plainArabic(words[0]).startsWith('بسم')) {
+                return words.slice(4).join(' ');
+            }
+            return text;
+        }
+
+        function makeSurahBanner(ayah, withBismillah, isContinued) {
+            const box = document.createElement('div');
+            box.className = 'w-full text-center my-6 border-y border-gold-500/30 py-4';
+
+            if (ayah.surahAr) {
+                const ar = document.createElement('div');
+                ar.className = 'text-2xl text-gold-600 font-bold';
+                ar.textContent = ayah.surahAr;
+                box.appendChild(ar);
             }
 
-            ayahs.forEach(ayah => {
+            const en = document.createElement('div');
+            en.className = 'text-xs font-sans text-gray-500 mt-1';
+            en.textContent = ayah.surahEn + (isContinued ? ' (continued)' : '');
+            box.appendChild(en);
+
+            if (withBismillah) {
+                const b = document.createElement('div');
+                b.className = 'text-2xl text-gold-500 mt-4';
+                b.textContent = BISMILLAH_TEXT;
+                box.appendChild(b);
+            }
+            return box;
+        }
+
+        function displayQuranData(title, ayahs, opts) {
+            const container = document.getElementById('versesContainer');
+            const bismillah = document.getElementById('bismillah');
+            const isJuz = !!opts.isJuz;
+
+            document.getElementById('readerTitle').textContent = title;
+            container.innerHTML = "";
+
+            // Single-surah mode: Bismillah shown once at the top (not for Fatihah / Tawbah)
+            const sNo = ayahs.length ? ayahs[0].surahNo : 0;
+            bismillah.classList.toggle('hidden', isJuz || sNo === 1 || sNo === 9);
+
+            ayahs.forEach((ayah, idx) => {
+                const startsSurah = ayah.n === 1;
+                const hasBismillah = startsSurah && ayah.surahNo !== 1 && ayah.surahNo !== 9;
                 let text = ayah.text;
-                // If Bismillah is shown, remove the Bismillah prefix from first ayah of Surah if API returns it
-                if (showBis && ayah.numberInSurah === 1 && text.startsWith("Ø¨ÙØ³Ù’Ù…Ù Ø§Ù„Ù„Ù‘ÙŽÙ‡Ù Ø§Ù„Ø±Ù‘ÙŽØ­Ù’Ù…ÙŽÙ°Ù†Ù Ø§Ù„Ø±Ù‘ÙŽØ­ÙÙŠÙ…Ù")) {
-                    text = text.replace("Ø¨ÙØ³Ù’Ù…Ù Ø§Ù„Ù„Ù‘ÙŽÙ‡Ù Ø§Ù„Ø±Ù‘ÙŽØ­Ù’Ù…ÙŽÙ°Ù†Ù Ø§Ù„Ø±Ù‘ÙŽØ­ÙÙŠÙ…Ù", "").trim();
+
+                if (hasBismillah) text = removeBismillah(text);
+
+                // Para (Juz) mode: show the surah name whenever a new surah begins
+                if (isJuz) {
+                    if (startsSurah) {
+                        container.appendChild(makeSurahBanner(ayah, hasBismillah, false));
+                    } else if (idx === 0) {
+                        container.appendChild(makeSurahBanner(ayah, false, true));
+                    }
                 }
 
-                // Render ayah block
                 const ayahSpan = document.createElement('span');
                 ayahSpan.className = "inline-block mb-3";
-                // Adding verse number inside formatted gold marker
-                ayahSpan.innerHTML = `${text} <span class="text-gold-500 font-sans font-bold text-xs border border-gold-500/40 rounded-full px-2 py-0.5 mx-1 inline-block select-none">${ayah.numberInSurah}</span>`;
+                ayahSpan.appendChild(document.createTextNode(text + " "));
+
+                const num = document.createElement('span');
+                num.className = "text-gold-500 font-sans font-bold text-xs border border-gold-500/40 rounded-full px-2 py-0.5 mx-1 inline-block select-none";
+                num.textContent = ayah.n;
+                ayahSpan.appendChild(num);
+
                 container.appendChild(ayahSpan);
             });
 
             showLoading(false);
+
+            // bring the result into view (helpful on phones)
+            document.getElementById('quranDisplayBox').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         function showLoading(isLoading) {
             const loading = document.getElementById('loading');
             const displayBox = document.getElementById('quranDisplayBox');
             const emptyState = document.getElementById('emptyState');
+            document.getElementById('errorState').classList.add('hidden');
 
             if (isLoading) {
                 loading.classList.remove('hidden');
