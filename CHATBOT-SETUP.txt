@@ -1,0 +1,5 @@
+# Al Fatima AI Chatbot
+
+1. Put chatbot-widget.js in your project root/public script location.
+2. Put api/chatbot.mjs in your Vercel project under api/chatbot.mjs.
+3. Add OPENAI_API_KEY in Vercel Environment Variables.

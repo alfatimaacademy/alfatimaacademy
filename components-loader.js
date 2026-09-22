@@ -48,6 +48,16 @@
     });
   }
 
+  // ── Support chatbot: load once, on every page ─────────────────
+  function loadChatbot() {
+    if (document.getElementById('afa-chatbot-script')) return; // already loaded
+    const script = document.createElement('script');
+    script.id = 'afa-chatbot-script';
+    script.src = '/chatbot-widget.js';
+    script.defer = true;
+    document.body.appendChild(script);
+  }
+
   // ── Main loader ───────────────────────────────────────────────
   async function loadComponents() {
     try {
@@ -65,6 +75,9 @@
 
     } catch (err) {
       console.warn('[ComponentLoader] Could not load components:', err.message);
+    } finally {
+      // Chatbot should load even if header/footer fail
+      loadChatbot();
     }
   }
 
