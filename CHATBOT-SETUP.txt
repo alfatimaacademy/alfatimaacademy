@@ -3,3 +3,8 @@
 1. Put chatbot-widget.js in your project root/public script location.
 2. Put api/chatbot.mjs in your Vercel project under api/chatbot.mjs.
 3. Add OPENAI_API_KEY in Vercel Environment Variables.
+
+
+Troubleshooting note:
+The AI route reads the model's REST Responses API output from the response `output` array.
+After changing Vercel Environment Variables, redeploy the project so the function receives the new values.

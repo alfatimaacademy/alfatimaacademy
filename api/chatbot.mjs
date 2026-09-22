@@ -183,7 +183,27 @@ export default async function handler(request) {
     }
 
     const data = await openaiResponse.json();
-    const raw = String(data.output_text || '').trim();
+
+    // IMPORTANT: with the REST Responses API, the generated text is exposed
+    // in the `output` array. `output_text` is a convenience property supported
+    // by some SDKs, but it is not reliable to assume it exists in raw REST JSON.
+    function extractResponseText(responseData) {
+      if (typeof responseData?.output_text === 'string' && responseData.output_text.trim()) {
+        return responseData.output_text.trim();
+      }
+
+      const chunks = [];
+      for (const item of Array.isArray(responseData?.output) ? responseData.output : []) {
+        for (const content of Array.isArray(item?.content) ? item.content : []) {
+          if (typeof content?.text === 'string' && content.text.trim()) {
+            chunks.push(content.text.trim());
+          }
+        }
+      }
+      return chunks.join('\n').trim();
+    }
+
+    const raw = extractResponseText(data);
 
     let result;
     try {
