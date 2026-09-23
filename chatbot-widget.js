@@ -67,8 +67,8 @@
     },
     {
       id: 'courses',
-      keywords: ['course', 'courses', 'service', 'services', 'program', 'programs', 'what do you teach', 'what can i learn', 'subjects', 'offer', 'offering', 'classes offered', 'study options', 'kya parhate', 'kya sikhate', 'kon se course', 'what services do you provide'],
-      reply: `Our main website programs are:<br><br>1. <b>Noorani / Madni Qaida</b> — Quran-reading foundation for beginners.<br>2. <b>Tajweed-ul-Quran</b> — pronunciation, articulation, and Tajweed rules.<br>3. <b>Nazra &amp; Hifz Quran</b> — fluent Quran reading and memorization.<br>4. <b>Islamic Supplications &amp; Etiquette</b> — daily Duas, Kalimas, Salah training, and Islamic manners.<br><br>For full descriptions, please visit the <a href="/services" target="_blank">Services page</a>.`,
+      keywords: ['course', 'courses', 'service', 'services', 'program', 'programs', 'what do you teach', 'what can i learn', 'subjects', 'offer', 'offering', 'classes offered', 'study options', 'kya parhate', 'kya sikhate', 'kon se course', 'what services do you provide', 'What are your services', 'what are your service'],
+      reply: `Our main website programs are:<br><br>1. <b>Noorani / Madni Qaida</b> — Quran-reading foundation for beginners.<br>2. <b>Tajweed-ul-Quran</b>  pronunciation, articulation, and Tajweed rules.<br>3. <b>Nazra &amp; Hifz Quran</b> — fluent Quran reading and memorization.<br>4. <b>Islamic Supplications &amp; Etiquette</b> — daily Duas, Kalimas, Salah training, and Islamic manners.<br><br>For full descriptions, please visit the <a href="/services" target="_blank">Services page</a>.`,
       quickReplies: ['course_qaida', 'course_tajweed', 'course_hifz', 'course_duas']
     },
     {
