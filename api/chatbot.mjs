@@ -8,18 +8,32 @@
  * REQUIRED ENVIRONMENT VARIABLE:
  * GEMINI_API_KEY
  *
+ * OPTIONAL ENVIRONMENT VARIABLES:
+ * GEMINI_MODEL           (default: gemini-3.5-flash-lite)
+ * GEMINI_FALLBACK_MODEL  (default: gemini-3.6-flash)
+ *
  * PURPOSE:
  * - Customer support only
  * - Al Fatima Academy / website questions only
  * - No general Islam/Quran knowledge
  * - No unrelated/general knowledge
- * - Gemini Free Tier model
  */
 
-const MODEL = 'gemini-3.5-flash-lite';
+const PRIMARY_MODEL =
+  process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite';
 
-const GEMINI_URL =
-  `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
+const FALLBACK_MODEL =
+  process.env.GEMINI_FALLBACK_MODEL || 'gemini-3.6-flash';
+
+// Models tried in order. Duplicates removed automatically.
+const MODEL_CHAIN = [...new Set([PRIMARY_MODEL, FALLBACK_MODEL])];
+
+// Timeout for EACH model attempt (milliseconds)
+const ATTEMPT_TIMEOUT_MS = 9000;
+
+function geminiUrl(model) {
+  return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+}
 
 
 /* ============================================================
@@ -34,6 +48,9 @@ const NOT_SURE_TEXT =
 
 const TEMPORARY_ERROR_TEXT =
   "Our customer support assistant is temporarily unavailable. Please try again shortly.";
+
+const BUSY_TEXT =
+  "The customer support assistant is temporarily busy. Please try again in a moment.";
 
 
 /* ============================================================
@@ -82,6 +99,12 @@ ALLOWED:
 - Payment information available in the supplied website data
 - Website navigation
 - Follow-up questions clearly related to the same customer-support conversation
+
+SHORT QUESTIONS:
+Short or vague customer messages such as "packages", "fees", "price",
+"trial", "timings", "courses", "contact", "what about packages",
+"kitni fees hai", "free trial kaise milega" are ALWAYS about the academy.
+Treat them as IN_SCOPE and answer using the supplied WEBSITE KNOWLEDGE.
 
 NOT ALLOWED:
 Do NOT answer general knowledge questions.
@@ -188,27 +211,11 @@ ANSWER: ${NOT_SURE_TEXT}
 ============================================================ */
 
 function setHeaders(res) {
-  res.setHeader(
-    'Content-Type',
-    'application/json; charset=utf-8'
-  );
-
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
   res.setHeader('Cache-Control', 'no-store');
-
-  res.setHeader(
-    'Access-Control-Allow-Origin',
-    '*'
-  );
-
-  res.setHeader(
-    'Access-Control-Allow-Methods',
-    'GET, POST, OPTIONS'
-  );
-
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'Content-Type'
-  );
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 }
 
 
@@ -266,27 +273,14 @@ function normalizeHistory(history) {
   return history
     .slice(-6)
     .map((item) => {
-      const role =
-        item?.role === 'assistant'
-          ? 'model'
-          : 'user';
-
-      const content =
-        cleanText(item?.content, 900);
-
-      return {
-        role,
-        content
-      };
+      const role = item?.role === 'assistant' ? 'model' : 'user';
+      const content = cleanText(item?.content, 900);
+      return { role, content };
     })
     .filter((item) => item.content)
     .map((item) => ({
       role: item.role,
-      parts: [
-        {
-          text: item.content
-        }
-      ]
+      parts: [{ text: item.content }]
     }));
 }
 
@@ -316,9 +310,7 @@ function normalizeKnowledge(knowledge) {
 ============================================================ */
 
 function looksClearlyOutOfScope(question) {
-  const text = String(question || '')
-    .toLowerCase()
-    .trim();
+  const text = String(question || '').toLowerCase().trim();
 
   const unrelatedPatterns = [
     /\bwhat is earth\b/,
@@ -353,9 +345,7 @@ function looksClearlyOutOfScope(question) {
     /\bworld history\b/
   ];
 
-  return unrelatedPatterns.some(
-    (pattern) => pattern.test(text)
-  );
+  return unrelatedPatterns.some((pattern) => pattern.test(text));
 }
 
 
@@ -364,19 +354,14 @@ function looksClearlyOutOfScope(question) {
 ============================================================ */
 
 function extractGeminiText(data) {
-  const parts =
-    data?.candidates?.[0]?.content?.parts;
+  const parts = data?.candidates?.[0]?.content?.parts;
 
   if (!Array.isArray(parts)) {
     return '';
   }
 
   return parts
-    .map((part) => {
-      return typeof part?.text === 'string'
-        ? part.text
-        : '';
-    })
+    .map((part) => (typeof part?.text === 'string' ? part.text : ''))
     .join('')
     .trim();
 }
@@ -392,24 +377,15 @@ function parseAssistantOutput(text) {
     .replace(/```/g, '')
     .trim();
 
-  const scopeMatch =
-    cleaned.match(
-      /^SCOPE:\s*(IN_SCOPE|OUT_OF_SCOPE)\s*$/im
-    );
+  const scopeMatch = cleaned.match(
+    /^SCOPE:\s*(IN_SCOPE|OUT_OF_SCOPE)\s*$/im
+  );
 
-  const answerMatch =
-    cleaned.match(
-      /^ANSWER:\s*([\s\S]*)$/im
-    );
+  const answerMatch = cleaned.match(/^ANSWER:\s*([\s\S]*)$/im);
 
-  const scope =
-    scopeMatch?.[1] || 'OUT_OF_SCOPE';
+  const scope = scopeMatch?.[1] || 'OUT_OF_SCOPE';
 
-  const answer =
-    cleanText(
-      answerMatch?.[1] || '',
-      2500
-    );
+  const answer = cleanText(answerMatch?.[1] || '', 2500);
 
   if (scope === 'OUT_OF_SCOPE') {
     return {
@@ -429,23 +405,17 @@ function parseAssistantOutput(text) {
    BUILD PROMPT
 ============================================================ */
 
-function buildPrompt(
-  question,
-  websiteKnowledge
-) {
+function buildPrompt(question, websiteKnowledge) {
   return [
     'WEBSITE KNOWLEDGE:',
     JSON.stringify(websiteKnowledge),
-
     '',
-
     'CUSTOMER QUESTION:',
     question,
-
     '',
-
     'IMPORTANT:',
     'Answer only if the question is about Al Fatima Academy or its website.',
+    'Short questions like "packages", "fees", "trial" are about the academy.',
     'Do not answer unrelated or general knowledge questions.',
     'Use only supported academy information.',
     'Return exactly the required SCOPE and ANSWER format.'
@@ -454,17 +424,17 @@ function buildPrompt(
 
 
 /* ============================================================
-   GEMINI REQUEST
+   SINGLE GEMINI REQUEST (ONE MODEL, OWN TIMEOUT)
+   Never throws. Always returns an object.
 ============================================================ */
 
-async function callGemini({
-  apiKey,
-  contents,
-  signal
-}) {
-  const response = await fetch(
-    GEMINI_URL,
-    {
+async function callGemini({ apiKey, model, contents }) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ATTEMPT_TIMEOUT_MS);
+  const startedAt = Date.now();
+
+  try {
+    const response = await fetch(geminiUrl(model), {
       method: 'POST',
 
       headers: {
@@ -474,41 +444,94 @@ async function callGemini({
 
       body: JSON.stringify({
         systemInstruction: {
-          parts: [
-            {
-              text: SYSTEM_INSTRUCTIONS
-            }
-          ]
+          parts: [{ text: SYSTEM_INSTRUCTIONS }]
         },
 
         contents,
 
         generationConfig: {
-          maxOutputTokens: 320
+          maxOutputTokens: 400
         }
       }),
 
-      signal
+      signal: controller.signal
+    });
+
+    const raw = await response.text();
+
+    let data = null;
+
+    try {
+      data = JSON.parse(raw);
+    } catch {
+      data = null;
     }
-  );
 
-  const raw =
-    await response.text();
+    return {
+      ok: response.ok,
+      status: response.status,
+      timedOut: false,
+      networkError: false,
+      ms: Date.now() - startedAt,
+      data,
+      text: extractGeminiText(data)
+    };
 
-  let data = null;
+  } catch (error) {
+    const timedOut = error?.name === 'AbortError';
 
-  try {
-    data = JSON.parse(raw);
-  } catch {
-    data = null;
+    return {
+      ok: false,
+      status: 0,
+      timedOut,
+      networkError: !timedOut,
+      ms: Date.now() - startedAt,
+      data: null,
+      text: '',
+      errorMessage: cleanText(error?.message, 200)
+    };
+
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+
+/* ============================================================
+   TRY MODELS ONE BY ONE UNTIL ONE WORKS
+============================================================ */
+
+async function callGeminiWithFallback({ apiKey, contents }) {
+  let lastResult = null;
+
+  for (const model of MODEL_CHAIN) {
+    const result = await callGemini({ apiKey, model, contents });
+
+    // Success with real text
+    if (result.ok && result.text) {
+      console.log(
+        `[Al Fatima Chatbot] OK model=${model} time=${result.ms}ms`
+      );
+      return { ...result, model };
+    }
+
+    // Log why this model failed, then try next model
+    console.error('[Al Fatima Chatbot] Model failed:', {
+      model,
+      status: result.status,
+      timedOut: result.timedOut,
+      networkError: result.networkError,
+      ms: result.ms,
+      detail:
+        cleanText(result.data?.error?.message, 300) ||
+        result.errorMessage ||
+        (result.ok ? 'Empty response text' : '')
+    });
+
+    lastResult = { ...result, model };
   }
 
-  return {
-    ok: response.ok,
-    status: response.status,
-    data,
-    text: extractGeminiText(data)
-  };
+  return lastResult;
 }
 
 
@@ -516,10 +539,7 @@ async function callGemini({
    MAIN VERCEL FUNCTION
 ============================================================ */
 
-export default async function handler(
-  req,
-  res
-) {
+export default async function handler(req, res) {
 
   /* -----------------------------
      OPTIONS
@@ -538,11 +558,10 @@ export default async function handler(
   if (req.method === 'GET') {
     return send(res, 200, {
       ok: true,
-      configured: Boolean(
-        process.env.GEMINI_API_KEY
-      ),
+      configured: Boolean(process.env.GEMINI_API_KEY),
       provider: 'gemini',
-      model: MODEL
+      model: PRIMARY_MODEL,
+      fallbackModel: FALLBACK_MODEL
     });
   }
 
@@ -552,9 +571,7 @@ export default async function handler(
   ----------------------------- */
 
   if (req.method !== 'POST') {
-    return send(res, 405, {
-      error: 'Method not allowed'
-    });
+    return send(res, 405, { error: 'Method not allowed' });
   }
 
 
@@ -562,14 +579,10 @@ export default async function handler(
      API KEY
   ----------------------------- */
 
-  const apiKey =
-    process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
-
-    console.error(
-      '[Al Fatima Chatbot] GEMINI_API_KEY missing'
-    );
+    console.error('[Al Fatima Chatbot] GEMINI_API_KEY missing');
 
     return send(res, 200, {
       scope: 'temporary',
@@ -582,19 +595,12 @@ export default async function handler(
      REQUEST BODY
   ----------------------------- */
 
-  const body =
-    parseRequestBody(req);
+  const body = parseRequestBody(req);
 
-  const question =
-    cleanText(
-      body?.question,
-      700
-    );
+  const question = cleanText(body?.question, 700);
 
   if (!question) {
-    return send(res, 400, {
-      error: 'Question is required.'
-    });
+    return send(res, 400, { error: 'Question is required.' });
   }
 
 
@@ -602,11 +608,7 @@ export default async function handler(
      FAST OUT-OF-SCOPE CHECK
   ----------------------------- */
 
-  if (
-    looksClearlyOutOfScope(
-      question
-    )
-  ) {
+  if (looksClearlyOutOfScope(question)) {
     return send(res, 200, {
       scope: 'out_of_scope',
       answer: OUT_OF_SCOPE_TEXT
@@ -618,15 +620,9 @@ export default async function handler(
      DATA FROM FRONTEND
   ----------------------------- */
 
-  const websiteKnowledge =
-    normalizeKnowledge(
-      body?.websiteKnowledge
-    );
+  const websiteKnowledge = normalizeKnowledge(body?.websiteKnowledge);
 
-  const history =
-    normalizeHistory(
-      body?.history
-    );
+  const history = normalizeHistory(body?.history);
 
 
   /* -----------------------------
@@ -634,175 +630,45 @@ export default async function handler(
   ----------------------------- */
 
   const contents = [
-
     ...history,
-
     {
       role: 'user',
-
       parts: [
         {
-          text: buildPrompt(
-            question,
-            websiteKnowledge
-          )
+          text: buildPrompt(question, websiteKnowledge)
         }
       ]
     }
-
   ];
 
 
   /* -----------------------------
-     TIMEOUT
-  ----------------------------- */
-
-  const controller =
-    new AbortController();
-
-  const timeout =
-    setTimeout(
-      () => controller.abort(),
-      18000
-    );
-
-
-  /* -----------------------------
-     GEMINI REQUEST
+     CALL GEMINI (WITH FALLBACK)
   ----------------------------- */
 
   try {
+    const result = await callGeminiWithFallback({ apiKey, contents });
 
-    let result =
-      await callGemini({
-        apiKey,
-        contents,
-        signal: controller.signal
-      });
-
-
-    /* --------------------------------
-       ONLY ONE RETRY FOR 503
-       NEVER RETRY 429
-    -------------------------------- */
-
-    if (result.status === 503) {
-
-      await new Promise(
-        (resolve) =>
-          setTimeout(
-            resolve,
-            1200
-          )
-      );
-
-      result =
-        await callGemini({
-          apiKey,
-          contents,
-          signal: controller.signal
-        });
-    }
-
-
-    /* -----------------------------
-       PROVIDER ERROR
-    ----------------------------- */
-
-    if (!result.ok) {
-
-      const providerDetail =
-        cleanText(
-          result.data?.error?.message,
-          300
-        );
-
-      console.error(
-        '[Al Fatima Chatbot] Gemini error:',
-        {
-          status: result.status,
-          detail: providerDetail
-        }
-      );
-
-
-      /* -----------------------------
-         RATE LIMIT
-      ----------------------------- */
-
-      if (result.status === 429) {
-
-        return send(res, 200, {
-          scope: 'temporary',
-          answer:
-            'The customer support assistant is temporarily busy. Please try again in a moment.'
-        });
-      }
-
-
-      /* -----------------------------
-         TEMPORARY SERVER ERROR
-      ----------------------------- */
-
-      if (
-        result.status >= 500 &&
-        result.status <= 599
-      ) {
-
-        return send(res, 200, {
-          scope: 'temporary',
-          answer:
-            'The customer support assistant is temporarily unavailable. Please try again shortly.'
-        });
-      }
-
-
-      /* -----------------------------
-         OTHER PROVIDER ERROR
-      ----------------------------- */
+    // All models failed
+    if (!result || !result.ok || !result.text) {
+      const busy = result?.status === 429;
 
       return send(res, 200, {
         scope: 'temporary',
-        answer: TEMPORARY_ERROR_TEXT
+        answer: busy ? BUSY_TEXT : TEMPORARY_ERROR_TEXT
       });
     }
 
+    const parsed = parseAssistantOutput(result.text);
 
-    /* -----------------------------
-       PARSE AI RESPONSE
-    ----------------------------- */
-
-    const parsed =
-      parseAssistantOutput(
-        result.text
-      );
-
-
-    /* -----------------------------
-       FINAL RESPONSE
-    ----------------------------- */
-
-    return send(
-      res,
-      200,
-      parsed
-    );
+    return send(res, 200, parsed);
 
   } catch (error) {
-
-    console.error(
-      '[Al Fatima Chatbot] Server error:',
-      error
-    );
+    console.error('[Al Fatima Chatbot] Server error:', error);
 
     return send(res, 200, {
       scope: 'temporary',
       answer: TEMPORARY_ERROR_TEXT
     });
-
-  } finally {
-
-    clearTimeout(timeout);
-
   }
 }
