@@ -8,9 +8,9 @@
  * REQUIRED ENVIRONMENT VARIABLE:
  * GEMINI_API_KEY
  *
- * OPTIONAL ENVIRONMENT VARIABLES:
- * GEMINI_MODEL           (default: gemini-3.5-flash-lite)
- * GEMINI_FALLBACK_MODEL  (default: gemini-3.6-flash)
+ * OPTIONAL ENVIRONMENT VARIABLE:
+ * GEMINI_MODELS  -> comma separated, tried in order
+ *   example: gemini-3.5-flash-lite,gemini-3.6-flash,gemini-2.5-flash
  *
  * PURPOSE:
  * - Customer support only
@@ -19,20 +19,42 @@
  * - No unrelated/general knowledge
  */
 
-const PRIMARY_MODEL =
-  process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite';
+/* ============================================================
+   MODEL CHAIN
+   Models are tried in order. If a model is overloaded (503),
+   busy (429), missing (404) or slow, the next model is used.
+============================================================ */
 
-const FALLBACK_MODEL =
-  process.env.GEMINI_FALLBACK_MODEL || 'gemini-3.6-flash';
+const DEFAULT_MODELS = [
+  'gemini-3.5-flash-lite',
+  'gemini-3.6-flash',
+  'gemini-2.5-flash'
+];
 
-// Models tried in order. Duplicates removed automatically.
-const MODEL_CHAIN = [...new Set([PRIMARY_MODEL, FALLBACK_MODEL])];
+const MODEL_CHAIN = [
+  ...new Set(
+    (process.env.GEMINI_MODELS || DEFAULT_MODELS.join(','))
+      .split(',')
+      .map((m) => m.trim())
+      .filter(Boolean)
+  )
+];
 
-// Timeout for EACH model attempt (milliseconds)
-const ATTEMPT_TIMEOUT_MS = 9000;
+// Timeout for EACH single attempt (milliseconds)
+const ATTEMPT_TIMEOUT_MS = 8000;
+
+// Stop trying new attempts after this total time (milliseconds)
+const TOTAL_DEADLINE_MS = 24000;
+
+// Wait before retrying the same model after a 503 (milliseconds)
+const RETRY_DELAY_MS = 800;
 
 function geminiUrl(model) {
   return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 
@@ -499,36 +521,61 @@ async function callGemini({ apiKey, model, contents }) {
 
 /* ============================================================
    TRY MODELS ONE BY ONE UNTIL ONE WORKS
+   - 503 (overloaded): retry the SAME model once, then next model
+   - anything else (429, 404, timeout...): go to next model
+   - stops when the total deadline is reached
 ============================================================ */
 
 async function callGeminiWithFallback({ apiKey, contents }) {
+  const startedAt = Date.now();
   let lastResult = null;
 
   for (const model of MODEL_CHAIN) {
-    const result = await callGemini({ apiKey, model, contents });
 
-    // Success with real text
-    if (result.ok && result.text) {
-      console.log(
-        `[Al Fatima Chatbot] OK model=${model} time=${result.ms}ms`
-      );
-      return { ...result, model };
+    for (let attempt = 1; attempt <= 2; attempt++) {
+
+      if (Date.now() - startedAt > TOTAL_DEADLINE_MS) {
+        console.error(
+          '[Al Fatima Chatbot] Total deadline reached, giving up.'
+        );
+        return lastResult;
+      }
+
+      const result = await callGemini({ apiKey, model, contents });
+
+      // Success with real text
+      if (result.ok && result.text) {
+        console.log(
+          `[Al Fatima Chatbot] OK model=${model} attempt=${attempt} time=${result.ms}ms`
+        );
+        return { ...result, model };
+      }
+
+      // Log why this attempt failed
+      console.error('[Al Fatima Chatbot] Model failed:', {
+        model,
+        attempt,
+        status: result.status,
+        timedOut: result.timedOut,
+        networkError: result.networkError,
+        ms: result.ms,
+        detail:
+          cleanText(result.data?.error?.message, 300) ||
+          result.errorMessage ||
+          (result.ok ? 'Empty response text' : '')
+      });
+
+      lastResult = { ...result, model };
+
+      // Only 503 is worth retrying on the same model
+      const retryable = result.status === 503;
+
+      if (!retryable || attempt === 2) {
+        break;
+      }
+
+      await sleep(RETRY_DELAY_MS);
     }
-
-    // Log why this model failed, then try next model
-    console.error('[Al Fatima Chatbot] Model failed:', {
-      model,
-      status: result.status,
-      timedOut: result.timedOut,
-      networkError: result.networkError,
-      ms: result.ms,
-      detail:
-        cleanText(result.data?.error?.message, 300) ||
-        result.errorMessage ||
-        (result.ok ? 'Empty response text' : '')
-    });
-
-    lastResult = { ...result, model };
   }
 
   return lastResult;
@@ -560,8 +607,7 @@ export default async function handler(req, res) {
       ok: true,
       configured: Boolean(process.env.GEMINI_API_KEY),
       provider: 'gemini',
-      model: PRIMARY_MODEL,
-      fallbackModel: FALLBACK_MODEL
+      models: MODEL_CHAIN
     });
   }
 
