@@ -3,10 +3,10 @@
  * ----------------------------------------------------------------
  * Al Fatima Academy — Website Support Chatbot
  *
- * A self-contained, dependency-free FAQ / support assistant for the
+ * A self-contained, dependency-free FAQ / AI support assistant for the
  * whole site. It injects its own CSS + HTML, so it can be dropped
  * into ANY page with a single <script> tag — no build step, no
- * external account, no API key.
+ * client-side API key.
  *
  * It is already auto-loaded on every page by components-loader.js,
  * so you normally do NOT need to add anything to the HTML files.
@@ -227,7 +227,7 @@
 
   const FALLBACK_REPLY = `I don't have enough information to answer that accurately. I can only help with <b>Al Fatima Academy</b>, our website/services, and <b>Islam &amp; Quran</b>-related questions.`;
   const OUT_OF_SCOPE_REPLY = `That question isn't relevant to my scope. I can only help with <b>Al Fatima Academy</b>, our website/services, and <b>Islam &amp; Quran</b>-related questions.`;
-  const AI_ERROR_REPLY = `I'm having trouble connecting to my AI assistant right now. Please try again in a moment, or ask me about our <b>courses, fees, trial, timings, teachers, or contact details</b>.`;
+  const AI_ERROR_REPLY = `I'm having trouble connecting to my AI assistant right now. Please try again shortly. You can also ask me about our <b>courses, fees, trial, timings, teachers, or contact details</b>.`;
   const FALLBACK_QUICK = ['courses', 'trial', 'packages', 'contact'];
 
   // ==================================================================
@@ -265,14 +265,25 @@
     return { entry: best, score: bestScore };
   }
 
-  // Use a local answer only when the intent is reasonably obvious.
-  // Ambiguous/natural-language questions are sent to the AI assistant.
+  // Use a local answer only when the intent is unambiguous. Broad single-word
+  // matches (for example, "time", "app", or "country") are sent to AI
+  // so an unrelated question is not accidentally answered as an academy FAQ.
+  const WEAK_LOCAL_KEYWORDS = new Set([
+    'time', 'country', 'app', 'support', 'pay', 'payment', 'number', 'call', 'language',
+    'age', 'plan', 'plans', 'schedule', 'platform', 'software', 'location', 'address'
+  ]);
+
   function findStrongLocalMatch(userText) {
     const { entry, score } = scoreMatch(userText);
     if (!entry) return null;
 
     const normalized = normalize(userText);
     const exactKeyword = entry.keywords.some(kw => normalized === normalize(kw));
+    const matchedWeakOnly = entry.keywords
+      .filter(kw => normalized.includes(normalize(kw)))
+      .some(kw => WEAK_LOCAL_KEYWORDS.has(normalize(kw)));
+
+    if (matchedWeakOnly && !exactKeyword && score < 2) return null;
     return exactKeyword || score >= 2 ? entry : null;
   }
 
@@ -305,7 +316,11 @@
     });
 
     if (!response.ok) {
-      throw new Error(`AI request failed: ${response.status}`);
+      let detail = null;
+      try { detail = await response.json(); } catch (_) {}
+      const err = new Error(`AI request failed: ${response.status}`);
+      err.providerStatus = detail?.providerStatus || response.status;
+      throw err;
     }
 
     const data = await response.json();
@@ -660,7 +675,10 @@
     } catch (error) {
       console.error('[Al Fatima Chatbot] AI error:', error);
       removeTyping();
-      pushBot({ reply: AI_ERROR_REPLY, quickReplies: FALLBACK_QUICK });
+      const reply = error?.providerStatus === 429
+        ? `The AI assistant is temporarily unavailable because the free Gemini usage limit has been reached. Please try again after the free quota resets.`
+        : AI_ERROR_REPLY;
+      pushBot({ reply, quickReplies: FALLBACK_QUICK });
     } finally {
       els.input.disabled = false;
       els.send.disabled = false;
