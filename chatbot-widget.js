@@ -3,10 +3,10 @@
  * ----------------------------------------------------------------
  * Al Fatima Academy — Website Support Chatbot
  *
- * A self-contained, dependency-free FAQ / AI support assistant for the
+ * A self-contained, dependency-free FAQ / support assistant for the
  * whole site. It injects its own CSS + HTML, so it can be dropped
  * into ANY page with a single <script> tag — no build step, no
- * client-side API key.
+ * external account, no API key.
  *
  * It is already auto-loaded on every page by components-loader.js,
  * so you normally do NOT need to add anything to the HTML files.
@@ -49,155 +49,158 @@
   const KB = [
     {
       id: 'greeting',
-      keywords: ['hi', 'hello', 'hey', 'salam', 'assalam', 'asalam', 'aoa', 'slam', 'marhaba', 'good morning', 'good evening'],
-      reply: `Assalam-o-Alaikum, and welcome! 👋<br>I'm the <b>${CONFIG.academyName}</b> support assistant. I can help with courses, fees, timings, the free trial, or connecting you with our team.<br>What would you like to know?`,
+      keywords: ['hi', 'hello', 'hey', 'good morning', 'good afternoon', 'good evening', 'salam', 'assalam o alaikum', 'assalamualaikum', 'aoa'],
+      reply: `Welcome to <b>${CONFIG.academyName}</b>. I’m here to assist you with our website, courses, fees, classes, free trial, registration, schedules, and contact information.<br>How can I help you today?`,
       quickReplies: ['courses', 'trial', 'packages', 'contact']
     },
     {
       id: 'about_academy',
-      keywords: ['about', 'who are you', 'what is this', 'academy kya hai', 'kon hain', 'kya ye', 'introduction', 'al quran international', 'al fatima'],
-      reply: `<b>${CONFIG.academyName}</b> is a project of <b>${CONFIG.parentOrg}</b> — a global online Islamic learning platform. We offer 1-on-1 live Quran and Tajweed classes for kids and adults, taught by certified Huffaz and Qaris, over Zoom / Google Meet.<br>We're based in ${CONFIG.location.replace(' (serving students worldwide)', '')}, and serve students worldwide (UK, USA, Canada, UAE, and more), 24/7.`,
+      keywords: ['about', 'about academy', 'who are you', 'what is al fatima academy', 'academy information', 'academy kya hai', 'about us', 'introduction', 'al quran international', 'al fatima academy'],
+      reply: `<b>${CONFIG.academyName}</b> is a project of <b>${CONFIG.parentOrg}</b>. The academy provides professional online Quran-learning programs with personalized 1-on-1 sessions for children and adults worldwide.<br><br>Our website highlights certified tutors, flexible scheduling, live classes through Zoom and Google Meet, and a 3-day free trial.`,
       quickReplies: ['courses', 'teachers', 'trial']
     },
     {
+      id: 'mission',
+      keywords: ['mission', 'goal', 'purpose', 'what is your mission', 'aim', 'why al fatima academy', 'learning environment', 'teaching approach'],
+      reply: `Al Fatima Academy’s website describes its mission as making Quran learning accessible, correct, interactive, and professional for students worldwide.<br><br>The academy emphasizes personalized 1-on-1 attention, flexible scheduling, certified educators, and a focused learning environment.`,
+      quickReplies: ['teachers', 'courses', 'timings']
+    },
+    {
       id: 'courses',
-      keywords: ['course', 'courses', 'service', 'services', 'subjects', 'offer', 'offering', 'what do you teach', 'what can i learn', 'kya parhate', 'kya sikhate', 'classes offer', 'programs', 'kon se course'],
-      reply: `We offer 4 structured courses:<br>
-        1️⃣ <b>Noorani / Madni Qaida</b> — Arabic letters &amp; foundation<br>
-        2️⃣ <b>Tajweed-ul-Quran</b> — correct recitation rules<br>
-        3️⃣ <b>Nazra &amp; Hifz Quran</b> — fluent reading or memorization<br>
-        4️⃣ <b>Islamic Supplications &amp; Etiquette</b> — daily Duas, Kalimas, Salah<br><br>
-        Tap a course below for full details, or visit the <a href="/services" target="_blank">Services page</a>.`,
+      keywords: ['course', 'courses', 'service', 'services', 'program', 'programs', 'what do you teach', 'what can i learn', 'subjects', 'offer', 'offering', 'classes offered', 'study options', 'kya parhate', 'kya sikhate', 'kon se course', 'what services do you provide'],
+      reply: `Our main website programs are:<br><br>1. <b>Noorani / Madni Qaida</b> — Quran-reading foundation for beginners.<br>2. <b>Tajweed-ul-Quran</b> — pronunciation, articulation, and Tajweed rules.<br>3. <b>Nazra &amp; Hifz Quran</b> — fluent Quran reading and memorization.<br>4. <b>Islamic Supplications &amp; Etiquette</b> — daily Duas, Kalimas, Salah training, and Islamic manners.<br><br>For full descriptions, please visit the <a href="/services" target="_blank">Services page</a>.`,
       quickReplies: ['course_qaida', 'course_tajweed', 'course_hifz', 'course_duas']
     },
     {
       id: 'course_qaida',
-      keywords: ['noorani qaida', 'madni qaida', 'qaida', 'basic arabic', 'letters', 'huroof', 'beginner course'],
-      reply: `<b>Noorani / Madni Qaida</b> is our foundation course for absolute beginners and kids — the essential first step before reading the Quran.<br>You'll learn: Arabic alphabet &amp; correct pronunciation (Makharij), letter shapes &amp; joining, Harakat (vowel marks), and basic Tajweed rules.<br><a href="/services#noorani-qaida" target="_blank">See full course details →</a>`,
+      keywords: ['noorani qaida', 'madni qaida', 'qaida', 'qaida course', 'quran reading foundation', 'arabic letters', 'makharij beginner', 'beginner quran course'],
+      reply: `<b>Noorani / Madni Qaida</b> is the foundation program for beginners, children, and adults who want to build correct Quran-reading skills from the start.<br><br>The website says students learn Arabic letters and their articulation (Makharij), letter joining, Harakat such as Fatha, Kasra, Damma, Tanween and Sukun, plus basic Tajweed and step-by-step word formation.<br><a href="/services" target="_blank">View the Services page →</a>`,
       quickReplies: ['trial', 'packages', 'teachers']
     },
     {
       id: 'course_tajweed',
-      keywords: ['tajweed', 'recitation', 'pronunciation course', 'makharij', 'ghunnah', 'idgham'],
-      reply: `<b>Tajweed-ul-Quran</b> teaches you to recite the Holy Quran correctly and beautifully.<br>You'll learn: Makharij-al-Huroof (articulation points), core rules (Ghunnah, Ikhfa, Idgham, Iqlab, Izhar), Noon/Meem Sakinah rules, Madd (elongation), and Waqf (pause signs).<br><a href="/services#tajweed-quran" target="_blank">See full course details →</a>`,
+      keywords: ['tajweed', 'tajwid', 'tajweed course', 'recitation', 'pronunciation', 'makharij', 'ghunnah', 'ikhfa', 'idgham', 'iqlab', 'izhar', 'madd', 'waqf'],
+      reply: `<b>Tajweed-ul-Quran</b> focuses on correct Quran recitation and pronunciation.<br><br>The website covers Makharij-al-Huroof, Ghunnah, Ikhfa, Idgham, Iqlab, Izhar, Noon and Meem Sakinah, Madd rules, Waqf signs, and vocal control and accent.`,
       quickReplies: ['trial', 'packages', 'teachers']
     },
     {
       id: 'course_hifz',
-      keywords: ['hifz', 'memorize', 'memorization', 'nazra', 'hafiz', 'yaad karna', 'quran yaad'],
-      reply: `<b>Nazra &amp; Hifz Quran</b> — read the Quran with correct flow, or memorize selected Surahs or the entire Quran, under certified Huffaz teachers.<br>Daily lessons follow the classic structure: <b>Sabaq</b> (new lesson), <b>Sabaqi</b> (recent revision), and <b>Manzil</b> (old revision), with Tajweed applied throughout.<br><a href="/services#hifz-quran" target="_blank">See full course details →</a>`,
+      keywords: ['hifz', 'hafiz', 'memorize quran', 'memorization', 'hifz course', 'quran memorization', 'nazra', 'nazrah', 'quran reading', 'surah memorization', 'sabaq', 'sabaqi', 'manzil'],
+      reply: `<b>Nazra &amp; Hifz Quran</b> combines fluent Quran reading with structured memorization support.<br><br>The website says students can work toward selected Surahs, selected portions, or the complete Quran. The Hifz structure includes <b>Sabaq</b> (new lesson), <b>Sabaqi</b> (recent revision), and <b>Manzil</b> (older revision), with Tajweed integrated throughout.`,
       quickReplies: ['trial', 'packages', 'teachers']
     },
     {
       id: 'course_duas',
-      keywords: ['duas', 'dua', 'kalima', 'kalmas', 'namaz', 'salah', 'prayer course', 'islamic supplications', 'etiquette', 'akhlaq'],
-      reply: `<b>Islamic Supplications &amp; Etiquette</b> is designed especially for kids and young adults (including those growing up in Western countries).<br>You'll learn: daily Masnoon Duas, the 6 Kalimas, step-by-step Salah (prayer) training including Wudu, and Islamic manners (Akhlaq).<br><a href="/services#islamic-duas" target="_blank">See full course details →</a>`,
+      keywords: ['duas', 'dua', 'islamic supplications', 'supplications', 'kalimas', 'six kalimas', 'namaz', 'salah', 'wudu', 'akhlaq', 'islamic manners', 'etiquette'],
+      reply: `<b>Islamic Supplications &amp; Etiquette</b> is a website program for children, young adults, and beginners.<br><br>It covers daily Masnoon Duas, the 6 Kalimas, practical Wudu and Salah training, Islamic manners (Akhlaq), short Surahs, basic Islamic history, and foundational Sunnah habits.`,
       quickReplies: ['trial', 'packages', 'teachers']
     },
     {
       id: 'trial',
-      keywords: ['trial', 'free class', 'demo', 'free trial', 'try', 'muft', 'azad class'],
-      reply: `Yes — we offer a <b>3-day free trial</b>, completely free, no credit card required.<br>Just fill the short registration form on the <a href="/" target="_blank">Home</a>, <a href="/packages" target="_blank">Packages</a>, or <a href="/services" target="_blank">Services</a> page, and our team will contact you within 24 hours to schedule your free classes.<br>Prefer to talk directly? <a href="${WHATSAPP_LINK("Assalam-o-Alaikum, I'd like to book a 3-day free trial class.")}" target="_blank">Message us on WhatsApp →</a>`,
-      quickReplies: ['packages', 'contact']
+      keywords: ['trial', 'free trial', '3 day trial', '3-day trial', 'free class', 'demo class', 'try a class', 'trial class', 'free demo', 'muft class'],
+      reply: `Yes. The website offers a <b>3-day free trial</b> with no credit card required.<br><br>You can apply through the registration form on the <a href="/" target="_blank">Home</a> or <a href="/services" target="_blank">Services</a> page. The website says an administrator or representative will contact you within 24 hours to arrange the trial.`,
+      quickReplies: ['register', 'packages', 'contact']
     },
     {
       id: 'register',
-      keywords: ['register', 'enroll', 'admission', 'join', 'sign up', 'apply', 'kaise join', 'admission kaise'],
-      reply: `Registering is easy — you don't need to create any account:<br>1. Fill the trial/registration form on the <a href="/" target="_blank">Home</a>, <a href="/packages" target="_blank">Packages</a>, or <a href="/services" target="_blank">Services</a> page.<br>2. Or simply message us on <a href="${WHATSAPP_LINK("Assalam-o-Alaikum, I want to enroll in a course.")}" target="_blank">WhatsApp</a>.<br>Our team replies within 24 hours to arrange your class schedule.`,
-      quickReplies: ['trial', 'packages', 'contact']
+      keywords: ['register', 'registration', 'enroll', 'enrollment', 'admission', 'join', 'sign up', 'apply', 'how to join', 'how do i register', 'admission kaise', 'join kaise'],
+      reply: `You can register through the application form on the website’s <a href="/" target="_blank">Home</a> or <a href="/services" target="_blank">Services</a> page.<br><br>The form asks for your name, WhatsApp number, course interest, country/timezone, and preferred timing or special instructions. You can also contact the academy directly for assistance.`,
+      quickReplies: ['trial', 'courses', 'contact']
     },
     {
       id: 'packages',
-      keywords: ['fee', 'fees', 'price', 'pricing', 'packages', 'package', 'plan', 'plans', 'cost', 'kitna paisa', 'kitni fees', 'monthly fee', 'charges'],
-      reply: `We have 3 plans, all with 1-on-1 live classes:<br>
-        🔹 <b>Basic</b> — 2 days/week, 8 classes/month, 30 min class, basic Tajweed &amp; Qaida<br>
-        🔹 <b>Standard</b> (Most Popular) — 3 days/week, 12 classes/month, proper Tajweed &amp; Hifz, monthly progress report<br>
-        🔹 <b>Intensive</b> — 5 days/week, 20 classes/month, full Hifz focus, senior teacher<br><br>
-        Exact fees depend on your country's currency (PKR, CAD/GBP, CNY, AED, BDT). Select your country on the <a href="/packages" target="_blank">Packages page</a> to see your rate, or ask our team directly.`,
+      keywords: ['fee', 'fees', 'price', 'pricing', 'package', 'packages', 'plan', 'plans', 'cost', 'monthly fee', 'charges', 'kitni fee', 'kitna paisa'],
+      reply: `The website has three flexible 1-on-1 plans:<br><br><b>Basic</b> — 2 days/week, 8 classes/month, 30-minute live classes, basic Tajweed &amp; Qaida, and essential daily Duas.<br><b>Standard</b> — 3 days/week, 12 classes/month, 30-minute live classes, proper Tajweed, Quran recitation &amp; Hifz, plus a monthly progress report.<br><b>Intensive</b> — 5 days/week, 20 classes/month, full Hifz focus, advanced pronunciation, flexible time adjustments, and a senior Quran teacher.<br><br>The website uses country selection to display customized monthly pricing.`,
       quickReplies: ['trial', 'contact', 'course_hifz']
     },
     {
+      id: 'pricing_countries',
+      keywords: ['country pricing', 'country fee', 'pakistan fee', 'canada fee', 'uk fee', 'china fee', 'uae fee', 'bangladesh fee', 'pkr', 'cad', 'gbp', 'cny', 'aed', 'bdt', 'currency'],
+      reply: `The <a href="/packages" target="_blank">Packages</a> page lets visitors choose a country to view customized monthly plans.<br><br>Available country/currency options shown on the website are Pakistan (PKR), Canada/UK ($ / £), China (CNY ¥), UAE (AED), and Bangladesh (BDT ৳).`,
+      quickReplies: ['packages', 'contact']
+    },
+    {
       id: 'duration',
-      keywords: ['duration', 'how long', 'kitni der', 'how many days', 'kitne din', 'class length', 'schedule', 'frequency'],
-      reply: `Each live class is <b>30 minutes</b>, 1-on-1 with your tutor. You can choose how often you study: <b>2, 3, or 5 days a week</b>, depending on the plan you pick — see our <a href="/packages" target="_blank">Packages</a> for details.`,
+      keywords: ['duration', 'class duration', 'how long is class', '30 minutes', 'class length', 'frequency', 'how many classes', 'days per week', 'schedule frequency'],
+      reply: `The website’s standard live class length is <b>30 minutes</b> and classes are conducted 1-on-1.<br><br>Plan frequency is 2 days/week for Basic, 3 days/week for Standard, and 5 days/week for Intensive.`,
       quickReplies: ['packages', 'timings']
     },
     {
       id: 'teachers',
-      keywords: ['teacher', 'teachers', 'tutor', 'tutors', 'ustaad', 'qari sahab', 'instructor', 'female teacher', 'lady teacher', 'male teacher'],
-      reply: `All our tutors are <b>certified Huffaz and Qaris</b> with real experience teaching Arabic phonetics and Quranic recitation online.<br>Our founder, <b>${CONFIG.founder}</b>, has 15+ years of teaching experience.<br>We also have <b>female tutors available</b> for sisters and young girls, respecting your preference.`,
+      keywords: ['teacher', 'teachers', 'tutor', 'tutors', 'qari', 'qari sahab', 'huffaz', 'hafiz teacher', 'female teacher', 'lady teacher', 'male teacher', 'instructor', 'qualified tutor'],
+      reply: `The website describes its teachers as <b>certified Huffaz and Qaris</b> with experience in Arabic phonetics and Quranic recitation.<br><br><b>Qari Muhammad Shafiq Raza</b> is presented as the founder and senior Quran teacher with <b>15+ years</b> of online and offline teaching experience.<br><br>Female tutors are also available for sisters and young girls.`,
       quickReplies: ['courses', 'trial']
     },
     {
       id: 'platform',
-      keywords: ['zoom', 'google meet', 'app', 'platform', 'kis app', 'online kaise', 'video call', 'software'],
-      reply: `Classes are held live over <b>Zoom</b> or <b>Google Meet</b> — whichever suits you best. You'll get a class link from your tutor/admin before each session; no special software purchase needed.`,
+      keywords: ['zoom', 'google meet', 'meet', 'online class', 'class platform', 'how classes work', 'video call', 'software', 'virtual class'],
+      reply: `Classes are conducted live through <b>Zoom</b> or <b>Google Meet</b>.<br><br>The website presents Zoom as the video classroom option and Google Meet as a browser-based option. Students receive the class link from the tutor or administration.`,
       quickReplies: ['timings', 'trial']
     },
     {
       id: 'timings',
-      keywords: ['timing', 'timings', 'time', 'schedule time', 'kab class', '24/7', 'time zone', 'timezone'],
-      reply: `We run classes <b>24 hours a day, 7 days a week</b>, so we can match almost any timezone. Since our students are spread across Pakistan, the UK, USA, Canada, UAE and more, just tell our team your preferred time when you register, and they'll fit a tutor to your schedule.`,
+      keywords: ['timing', 'timings', 'schedule', 'class time', 'what time', 'when are classes', '24/7', 'timezone', 'time zone', 'kab class', 'available time'],
+      reply: `The academy website states that classes operate <b>24 hours a day, 7 days a week</b> so schedules can be adjusted for students in different time zones.<br><br>Your preferred timing can be provided during registration.`,
       quickReplies: ['trial', 'contact']
     },
     {
       id: 'age_group',
-      keywords: ['age', 'kids', 'children', 'adults', 'bachon', 'bache', 'umar', 'how old'],
-      reply: `Our classes are open to <b>both kids and adults, of all ages and levels</b> — from absolute beginners to those refining advanced Tajweed. Classes are personalized 1-on-1, so the pace is set to the student.`,
-      quickReplies: ['courses', 'trial']
+      keywords: ['age', 'kids', 'children', 'adults', 'child', 'for kids', 'for adults', 'all ages', 'bachay', 'bache', 'umar', 'who can join'],
+      reply: `The website says its learning programs are available for <b>children and adults of all ages</b>, from beginners to students who want to refine their Quran reading and Tajweed. Sessions are personalized to the learner’s pace.`,
+      quickReplies: ['courses', 'trial', 'teachers']
     },
     {
       id: 'location',
-      keywords: ['location', 'address', 'where are you', 'kahan', 'country', 'which country', 'based in', 'office'],
-      reply: `Our head office is in <b>${CONFIG.location}</b> — but all classes are conducted online, so students from any country (Pakistan, UK, USA, Canada, UAE, Bangladesh, and more) can join.`,
+      keywords: ['location', 'address', 'where are you', 'where is academy', 'office', 'head office', 'based in', 'country', 'kahan', 'lahore'],
+      reply: `The academy’s head office is listed in <b>Lahore, Punjab, Pakistan</b>. The website operates globally online, so students can join from different countries.`,
       quickReplies: ['contact', 'timings']
     },
     {
       id: 'contact',
-      keywords: ['contact', 'phone', 'number', 'whatsapp', 'call', 'email', 'reach you', 'support', 'helpline'],
-      reply: `You can reach us anytime:<br>📞 Call / WhatsApp: <a href="${WHATSAPP_LINK('')}" target="_blank">${CONFIG.whatsappDisplay}</a><br>✉️ Email: <a href="mailto:${CONFIG.email}">${CONFIG.email}</a><br>📍 ${CONFIG.location}<br>Or use our <a href="/contact" target="_blank">Contact page</a> to send a message.`,
+      keywords: ['contact', 'phone', 'number', 'whatsapp', 'call', 'email', 'email address', 'support', 'hotline', 'reach you', 'contact us'],
+      reply: `You can contact <b>${CONFIG.academyName}</b> by email at <a href="mailto:${CONFIG.email}">${CONFIG.email}</a>.<br><br>The Home page lists <b>Call / WhatsApp: ${CONFIG.whatsappDisplay}</b>. The Contact page separately lists a <b>Direct Support Hotline: +92 307 4277240</b>.<br><br>You can also use the <a href="/contact" target="_blank">Contact page</a> to send a message.`,
       quickReplies: ['trial', 'packages']
     },
     {
-      id: 'quran_about',
-      keywords: ['what is quran', 'quran kya hai', 'quran kya hota hai', 'tell me about quran', 'holy quran', 'quran meaning', 'about quran'],
-      reply: `<b>The Quran</b> is the central scripture of Islam. Muslims believe it is the word of Allah revealed to Prophet Muhammad ﷺ through Angel Jibreel (Gabriel). It is in Arabic and is divided into 114 Surahs (chapters).<br><br>If you'd like to learn Quran reading or recitation, we offer <b>Noorani / Madni Qaida, Tajweed-ul-Quran, Nazra &amp; Hifz</b>, and Islamic Supplications &amp; Etiquette classes.`,
-      quickReplies: ['courses', 'course_tajweed', 'course_hifz', 'trial']
-    },
-    {
       id: 'quran_reader',
-      keywords: ['read quran', 'quran parhna', 'para', 'juz', 'surah', 'online quran', 'quran reader', 'mushaf'],
-      reply: `You can read the full Quran (Uthmani script) right on our site, free — no login needed. Go to <a href="/quran" target="_blank">Read Quran</a> and select any Para (Juz) or Surah from the dropdown.`,
-      quickReplies: ['courses', 'trial']
+      keywords: ['read quran', 'quran reader', 'online quran reader', 'read holy quran', 'para', 'juz', 'surah', 'quran page', 'quran reading page', 'mushaf'],
+      reply: `The website includes an <b>Interactive Quran Reader</b> where you can choose a <b>Para (Juz)</b> or <b>Surah</b> and adjust the Arabic text size for comfortable reading.<br><br>Open the <a href="/quran" target="_blank">Read Quran</a> page to use it.`,
+      quickReplies: ['courses', 'contact']
     },
     {
       id: 'languages',
-      keywords: ['language', 'languages', 'translate', 'urdu website', 'arabic website', 'multi language'],
-      reply: `Our website supports translation into <b>11 languages</b>, including English, Urdu, Arabic, Bengali, Hindi, Turkish, Chinese, Japanese, Korean, Spanish, and French. Look for the language selector button on any page.`,
+      keywords: ['language', 'languages', 'translate', 'translation', 'urdu', 'arabic language', 'bengali', 'hindi', 'turkish', 'chinese', 'japanese', 'korean', 'spanish', 'french', 'language options'],
+      reply: `The website provides a language selector with <b>11 options</b>: English, Urdu, Arabic, Bengali, Hindi, Turkish, Chinese, Japanese, Korean, Spanish, and French.`,
       quickReplies: ['contact']
     },
     {
       id: 'payment',
-      keywords: ['payment', 'pay', 'bank transfer', 'easypaisa', 'jazzcash', 'credit card', 'how to pay', 'refund', 'cancel', 'cancellation'],
-      reply: `Payment methods and cancellation details aren't listed publicly on the site, as they can vary by country. Please ask our team directly — they'll guide you clearly before you commit to anything: <a href="${WHATSAPP_LINK('Assalam-o-Alaikum, I have a question about payment methods.')}" target="_blank">Message us on WhatsApp →</a>`,
+      keywords: ['payment', 'pay', 'how to pay', 'payment method', 'bank transfer', 'easypaisa', 'jazzcash', 'card', 'credit card', 'refund', 'cancel', 'cancellation'],
+      reply: `The public website content does not specify a complete list of payment methods or a detailed cancellation/refund policy.<br><br>For the correct payment information for your country, please contact the academy through the <a href="/contact" target="_blank">Contact page</a> or WhatsApp.`,
       quickReplies: ['contact', 'packages']
     },
     {
-      id: 'sitemap',
-      keywords: ['pages', 'menu', 'sitemap', 'navigation', 'website pages'],
-      reply: `Here's a quick map of the site:<br>🏠 <a href="/" target="_blank">Home</a> · ℹ️ <a href="/about" target="_blank">About Us</a> · 📚 <a href="/services" target="_blank">Services</a> · 💰 <a href="/packages" target="_blank">Packages</a> · 📖 <a href="/quran" target="_blank">Read Quran</a> · ✉️ <a href="/contact" target="_blank">Contact</a>`,
+      id: 'registration_options',
+      keywords: ['registration courses', 'form courses', 'course selection', 'form option', 'available courses in form', 'admission form courses'],
+      reply: `The registration forms on the website show course options including <b>Madni Qaida, Tajweed Course, Nazra Quran, Basic Islam/Duas, Nimaz, Hadis,</b> and <b>Tarjuma Quran</b>.<br><br>The main Services page presents the academy’s four primary program groups; the registration form provides the more detailed selection list.`,
+      quickReplies: ['courses', 'register']
+    },
+    {
+      id: 'website_pages',
+      keywords: ['pages', 'website pages', 'menu', 'navigation', 'where can i find', 'site map', 'website sections'],
+      reply: `The website includes <a href="/" target="_blank">Home</a>, <a href="/about" target="_blank">About Us</a>, <a href="/services" target="_blank">Services</a>, <a href="/packages" target="_blank">Packages</a>, <a href="/quran" target="_blank">Read Quran</a>, and <a href="/contact" target="_blank">Contact</a> pages.`,
       quickReplies: ['courses', 'contact']
     },
     {
       id: 'thanks',
-      keywords: ['thanks', 'thank you', 'shukriya', 'jazakallah', 'jazak allah', 'appreciate'],
-      reply: `You're most welcome! 🌙 Is there anything else I can help you with?`,
+      keywords: ['thanks', 'thank you', 'thankyou', 'shukriya', 'jazakallah', 'appreciate it'],
+      reply: `You’re welcome. Is there anything else I can help you with regarding <b>${CONFIG.academyName}</b>?`,
       quickReplies: ['courses', 'trial', 'contact']
     },
     {
       id: 'bye',
-      keywords: ['bye', 'goodbye', 'khuda hafiz', 'allah hafiz', 'see you', 'ok bye'],
-      reply: `Allah Hafiz! 🌙 Feel free to come back anytime — or reach us directly on <a href="${WHATSAPP_LINK('')}" target="_blank">WhatsApp</a>. Have a blessed day!`,
+      keywords: ['bye', 'goodbye', 'see you', 'allah hafiz', 'khuda hafiz', 'ok bye'],
+      reply: `Thank you for visiting <b>${CONFIG.academyName}</b>. We’re here whenever you need assistance.`,
       quickReplies: []
     }
   ];
@@ -218,16 +221,15 @@
     age_group: 'Age Groups',
     location: 'Location',
     contact: '📞 Contact Us',
-    quran_about: '📖 What is Quran?',
     quran_reader: '📖 Read Quran',
     languages: 'Languages',
     payment: 'Payment Info',
     sitemap: 'Site Map'
   };
 
-  const FALLBACK_REPLY = `I don't have enough information to answer that accurately. I can only help with <b>Al Fatima Academy</b>, our website/services, and <b>Islam &amp; Quran</b>-related questions.`;
-  const OUT_OF_SCOPE_REPLY = `That question isn't relevant to my scope. I can only help with <b>Al Fatima Academy</b>, our website/services, and <b>Islam &amp; Quran</b>-related questions.`;
-  const AI_ERROR_REPLY = `I'm having trouble connecting to my AI assistant right now. Please try again shortly. You can also ask me about our <b>courses, fees, trial, timings, teachers, or contact details</b>.`;
+  const FALLBACK_REPLY = `I don’t have enough information to answer that accurately yet. Please ask me about <b>${CONFIG.academyName}</b>, our website, courses, classes, fees, trial, registration, or contact details.`;
+  const OUT_OF_SCOPE_REPLY = `Sorry, I can only help with <b>${CONFIG.academyName}</b> and this website. Please ask me about our courses, classes, fees, trial, registration, timings, or contact details.`;
+  const AI_ERROR_REPLY = `Sorry, I couldn’t process that right now. Please try again in a moment.`;
   const FALLBACK_QUICK = ['courses', 'trial', 'packages', 'contact'];
 
   // ==================================================================
@@ -265,32 +267,37 @@
     return { entry: best, score: bestScore };
   }
 
-  // Use a local answer only when the intent is unambiguous. Broad single-word
-  // matches (for example, "time", "app", or "country") are sent to AI
-  // so an unrelated question is not accidentally answered as an academy FAQ.
-  const WEAK_LOCAL_KEYWORDS = new Set([
-    'time', 'country', 'app', 'support', 'pay', 'payment', 'number', 'call', 'language',
-    'age', 'plan', 'plans', 'schedule', 'platform', 'software', 'location', 'address'
-  ]);
-
+  // Use a local answer only when the intent is reasonably obvious.
+  // Ambiguous/natural-language questions are sent to the AI assistant.
   function findStrongLocalMatch(userText) {
     const { entry, score } = scoreMatch(userText);
     if (!entry) return null;
 
     const normalized = normalize(userText);
     const exactKeyword = entry.keywords.some(kw => normalized === normalize(kw));
-    const matchedWeakOnly = entry.keywords
-      .filter(kw => normalized.includes(normalize(kw)))
-      .some(kw => WEAK_LOCAL_KEYWORDS.has(normalize(kw)));
-
-    if (matchedWeakOnly && !exactKeyword && score < 2) return null;
     return exactKeyword || score >= 2 ? entry : null;
   }
 
-  function websiteKnowledgeForAI() {
-    return KB.map(entry => ({
+  function websiteKnowledgeForAI(userText) {
+    const { entry: bestEntry } = scoreMatch(userText);
+    const normalized = normalize(userText);
+
+    // Send only the most relevant site entries to reduce API usage while
+    // keeping enough context for natural multi-part customer questions.
+    const scored = KB.map(entry => {
+      let score = 0;
+      entry.keywords.forEach(kw => {
+        const k = normalize(kw);
+        if (normalized.includes(k)) score += k.split(' ').length + 1;
+      });
+      if (entry === bestEntry) score += 2;
+      return { entry, score };
+    })
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 6);
+
+    return scored.map(({ entry }) => ({
       id: entry.id,
-      keywords: entry.keywords,
       answer: entry.reply.replace(/<[^>]*>/g, ' ').replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim()
     }));
   }
@@ -311,16 +318,12 @@
       body: JSON.stringify({
         question,
         history: getRecentHistoryForAI(),
-        websiteKnowledge: websiteKnowledgeForAI()
+        websiteKnowledge: websiteKnowledgeForAI(question)
       })
     });
 
     if (!response.ok) {
-      let detail = null;
-      try { detail = await response.json(); } catch (_) {}
-      const err = new Error(`AI request failed: ${response.status}`);
-      err.providerStatus = detail?.providerStatus || response.status;
-      throw err;
+      throw new Error(`AI request failed: ${response.status}`);
     }
 
     const data = await response.json();
@@ -339,117 +342,117 @@
   // ==================================================================
   const CSS = `
   .afa-cb-launcher {
-    position: fixed; right: 24px; bottom: 24px; z-index: 99998;
-    width: 60px; height: 60px; border-radius: 999px; border: 2px solid #0a0a0a;
-    background: linear-gradient(145deg, #e5c060, #D4AF37);
-    color: #0a0a0a; font-size: 26px; display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 8px 24px rgba(0,0,0,.45); cursor: pointer;
-    transition: transform .25s ease, box-shadow .25s ease;
+    position: fixed; right: 22px; bottom: 22px; z-index: 99998;
+    width: 56px; height: 56px; border-radius: 16px; border: 1px solid rgba(212,175,55,.55);
+    background: #171717; color: #e5c060; font-size: 20px; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 10px 28px rgba(0,0,0,.28); cursor: pointer;
+    transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
   }
-  .afa-cb-launcher:hover { transform: scale(1.08); box-shadow: 0 10px 30px rgba(0,0,0,.55); }
+  .afa-cb-launcher:hover { transform: translateY(-2px); background: #1d1d1d; box-shadow: 0 12px 30px rgba(0,0,0,.34); }
   .afa-cb-launcher .afa-cb-dot {
-    position: absolute; top: -2px; right: -2px; width: 16px; height: 16px; border-radius: 50%;
-    background: #ef4444; border: 2px solid #0a0a0a; display: none;
+    position: absolute; top: -3px; right: -3px; width: 11px; height: 11px; border-radius: 50%;
+    background: #30c46b; border: 2px solid #0d0d0d; display: none;
   }
   .afa-cb-launcher.afa-has-badge .afa-cb-dot { display: block; }
 
   .afa-cb-panel {
-    position: fixed; right: 24px; bottom: 96px; z-index: 99999;
-    width: 370px; max-width: calc(100vw - 32px);
-    height: 560px; max-height: calc(100vh - 140px);
-    background: #0d0d0d; border: 1px solid rgba(212,175,55,.35); border-radius: 18px;
-    box-shadow: 0 20px 60px rgba(0,0,0,.6);
+    position: fixed; right: 22px; bottom: 88px; z-index: 99999;
+    width: 360px; max-width: calc(100vw - 28px);
+    height: 520px; max-height: calc(100vh - 120px);
+    background: #111; border: 1px solid rgba(255,255,255,.09); border-radius: 16px;
+    box-shadow: 0 22px 55px rgba(0,0,0,.42);
     display: none; flex-direction: column; overflow: hidden;
     font-family: 'Poppins', Arial, sans-serif;
   }
   .afa-cb-panel.afa-open { display: flex; }
 
   .afa-cb-header {
-    background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
-    border-bottom: 1px solid rgba(212,175,55,.3);
-    padding: 14px 16px; display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+    background: #141414; border-bottom: 1px solid rgba(255,255,255,.08);
+    padding: 13px 15px; display: flex; align-items: center; gap: 10px; flex-shrink: 0;
   }
   .afa-cb-avatar {
-    width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
-    background: linear-gradient(145deg, #e5c060, #D4AF37);
-    display: flex; align-items: center; justify-content: center; color: #0a0a0a; font-size: 17px;
+    width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+    background: #1d1d1d; border: 1px solid rgba(212,175,55,.45);
+    display: flex; align-items: center; justify-content: center; color: #e5c060; font-size: 12px; font-weight: 700;
+    letter-spacing: .4px;
   }
   .afa-cb-title { flex: 1; min-width: 0; }
-  .afa-cb-title b { color: #e5c060; font-family: 'Cinzel', serif; font-size: 14.5px; display: block; letter-spacing: .3px; }
-  .afa-cb-title span { color: #9ca3af; font-size: 11px; display: flex; align-items: center; gap: 5px; }
-  .afa-cb-title span::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #22c55e; display: inline-block; }
+  .afa-cb-title b { color: #f1f1f1; font-size: 13.5px; font-weight: 600; display: block; letter-spacing: .1px; }
+  .afa-cb-title span { color: #8f8f8f; font-size: 10.5px; display: flex; align-items: center; gap: 5px; margin-top: 2px; }
+  .afa-cb-title span::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #30c46b; display: inline-block; }
   .afa-cb-headbtn {
-    background: transparent; border: none; color: #9ca3af; font-size: 15px; cursor: pointer;
-    width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    transition: background .2s, color .2s;
+    background: transparent; border: none; color: #858585; font-size: 14px; cursor: pointer;
+    width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    transition: background .18s, color .18s;
   }
-  .afa-cb-headbtn:hover { background: rgba(212,175,55,.15); color: #e5c060; }
+  .afa-cb-headbtn:hover { background: rgba(255,255,255,.06); color: #e5c060; }
 
   .afa-cb-body {
-    flex: 1; overflow-y: auto; padding: 16px 12px; background: #0d0d0d;
-    display: flex; flex-direction: column; gap: 10px;
+    flex: 1; overflow-y: auto; padding: 14px 12px; background: #0f0f0f;
+    display: flex; flex-direction: column; gap: 9px;
   }
-  .afa-cb-body::-webkit-scrollbar { width: 6px; }
-  .afa-cb-body::-webkit-scrollbar-thumb { background: rgba(212,175,55,.35); border-radius: 6px; }
+  .afa-cb-body::-webkit-scrollbar { width: 5px; }
+  .afa-cb-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,.10); border-radius: 6px; }
 
-  .afa-cb-row { display: flex; gap: 8px; align-items: flex-end; }
+  .afa-cb-row { display: flex; gap: 7px; align-items: flex-end; }
   .afa-cb-row.afa-user { justify-content: flex-end; }
   .afa-cb-bubble {
-    max-width: 82%; padding: 10px 13px; border-radius: 14px; font-size: 13.5px; line-height: 1.55;
+    max-width: 82%; padding: 9px 11px; border-radius: 12px; font-size: 12.8px; line-height: 1.5;
     word-wrap: break-word;
   }
-  .afa-cb-row.afa-bot .afa-cb-bubble { background: #1c1c1c; color: #e5e7eb; border-bottom-left-radius: 4px; border: 1px solid rgba(255,255,255,.06); }
-  .afa-cb-row.afa-user .afa-cb-bubble { background: linear-gradient(135deg, #e5c060, #D4AF37); color: #0a0a0a; border-bottom-right-radius: 4px; font-weight: 500; }
+  .afa-cb-row.afa-bot .afa-cb-bubble { background: #191919; color: #e3e3e3; border-bottom-left-radius: 4px; border: 1px solid rgba(255,255,255,.055); }
+  .afa-cb-row.afa-user .afa-cb-bubble { background: #d4af37; color: #151515; border-bottom-right-radius: 4px; font-weight: 500; }
   .afa-cb-bubble a { color: #e5c060; text-decoration: underline; }
-  .afa-cb-row.afa-user .afa-cb-bubble a { color: #0a0a0a; text-decoration: underline; }
+  .afa-cb-row.afa-user .afa-cb-bubble a { color: #151515; text-decoration: underline; }
   .afa-cb-mini-avatar {
-    width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0; margin-bottom: 2px;
-    background: linear-gradient(145deg, #e5c060, #D4AF37); color: #0a0a0a;
-    display: flex; align-items: center; justify-content: center; font-size: 11px;
+    width: 22px; height: 22px; border-radius: 7px; flex-shrink: 0; margin-bottom: 2px;
+    background: #1d1d1d; border: 1px solid rgba(212,175,55,.42); color: #e5c060;
+    display: flex; align-items: center; justify-content: center; font-size: 7px; font-weight: 700;
   }
 
-  .afa-cb-typing { display: flex; gap: 4px; padding: 4px 2px; }
+  .afa-cb-typing { display: flex; gap: 4px; padding: 3px 1px; }
   .afa-cb-typing span {
-    width: 6px; height: 6px; border-radius: 50%; background: #D4AF37; opacity: .5;
+    width: 5px; height: 5px; border-radius: 50%; background: #b8932d; opacity: .55;
     animation: afaTyping 1s infinite ease-in-out;
   }
   .afa-cb-typing span:nth-child(2) { animation-delay: .15s; }
   .afa-cb-typing span:nth-child(3) { animation-delay: .3s; }
-  @keyframes afaTyping { 0%, 60%, 100% { transform: translateY(0); opacity: .4; } 30% { transform: translateY(-4px); opacity: 1; } }
+  @keyframes afaTyping { 0%,60%,100% { transform: translateY(0); opacity: .35; } 30% { transform: translateY(-3px); opacity: 1; } }
 
-  .afa-cb-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; padding-left: 32px; }
+  .afa-cb-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 1px; padding-left: 29px; }
   .afa-cb-chip {
-    background: rgba(212,175,55,.1); border: 1px solid rgba(212,175,55,.4); color: #e5c060;
-    font-size: 12px; padding: 6px 11px; border-radius: 999px; cursor: pointer; white-space: nowrap;
-    transition: background .2s, color .2s;
+    background: #151515; border: 1px solid rgba(212,175,55,.35); color: #d9bb65;
+    font-size: 11px; padding: 5px 8px; border-radius: 8px; cursor: pointer; white-space: nowrap;
+    transition: background .18s, border-color .18s, color .18s;
   }
-  .afa-cb-chip:hover { background: #D4AF37; color: #0a0a0a; }
+  .afa-cb-chip:hover { background: #1b1b1b; border-color: rgba(212,175,55,.65); color: #f1d78a; }
 
-  .afa-cb-footer { border-top: 1px solid rgba(212,175,55,.2); padding: 10px; flex-shrink: 0; background: #0a0a0a; }
+  .afa-cb-footer { border-top: 1px solid rgba(255,255,255,.08); padding: 9px; flex-shrink: 0; background: #121212; }
   .afa-cb-wa {
-    display: flex; align-items: center; justify-content: center; gap: 7px;
-    background: transparent; border: 1px solid rgba(37,211,102,.5); color: #25D366;
-    font-size: 11.5px; font-weight: 600; padding: 7px; border-radius: 10px; margin-bottom: 8px;
-    text-decoration: none; transition: background .2s;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    background: transparent; border: 1px solid rgba(37,211,102,.35); color: #52d989;
+    font-size: 10.5px; font-weight: 600; padding: 7px; border-radius: 8px; margin-bottom: 7px;
+    text-decoration: none; transition: background .18s, border-color .18s;
   }
-  .afa-cb-wa:hover { background: rgba(37,211,102,.12); }
-  .afa-cb-inputwrap { display: flex; gap: 8px; align-items: center; }
+  .afa-cb-wa:hover { background: rgba(37,211,102,.06); border-color: rgba(37,211,102,.55); }
+  .afa-cb-inputwrap { display: flex; gap: 7px; align-items: center; }
   .afa-cb-input {
-    flex: 1; background: #1a1a1a; border: 1px solid rgba(255,255,255,.1); color: #f3f4f6;
-    padding: 10px 13px; border-radius: 999px; font-size: 13.5px; outline: none; font-family: inherit;
+    flex: 1; background: #181818; border: 1px solid rgba(255,255,255,.10); color: #f1f1f1;
+    padding: 9px 12px; border-radius: 10px; font-size: 12.8px; outline: none; font-family: inherit;
   }
-  .afa-cb-input:focus { border-color: #D4AF37; }
+  .afa-cb-input::placeholder { color: #747474; }
+  .afa-cb-input:focus { border-color: rgba(212,175,55,.55); }
   .afa-cb-send {
-    width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0; border: none; cursor: pointer;
-    background: linear-gradient(145deg, #e5c060, #D4AF37); color: #0a0a0a; font-size: 15px;
-    display: flex; align-items: center; justify-content: center; transition: transform .15s;
+    width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0; border: 1px solid rgba(212,175,55,.45); cursor: pointer;
+    background: #d4af37; color: #151515; font-size: 13px;
+    display: flex; align-items: center; justify-content: center; transition: transform .15s, background .15s;
   }
-  .afa-cb-send:hover { transform: scale(1.07); }
+  .afa-cb-send:hover { transform: translateY(-1px); background: #e2c35a; }
   .afa-cb-send:disabled { opacity: .5; cursor: default; transform: none; }
 
   @media (max-width: 480px) {
-    .afa-cb-panel { right: 16px; left: 16px; width: auto; bottom: 88px; height: 70vh; }
-    .afa-cb-launcher { right: 16px; bottom: 16px; }
+    .afa-cb-panel { right: 12px; left: 12px; width: auto; bottom: 78px; height: 72vh; }
+    .afa-cb-launcher { right: 14px; bottom: 14px; }
   }
   `;
 
@@ -469,16 +472,16 @@
     wrap.id = 'afa-chatbot-root';
     wrap.innerHTML = `
       <button class="afa-cb-launcher" id="afaCbLauncher" title="Chat with us" aria-label="Open chat">
-        <i class="fa-solid fa-comment-dots" id="afaCbLauncherIcon"></i>
+        <i class="fa-solid fa-headset" id="afaCbLauncherIcon"></i>
         <span class="afa-cb-dot"></span>
       </button>
 
       <div class="afa-cb-panel" id="afaCbPanel" role="dialog" aria-label="Al Fatima Academy chat support">
         <div class="afa-cb-header">
-          <div class="afa-cb-avatar"><i class="fa-solid fa-mosque"></i></div>
+          <div class="afa-cb-avatar">AFA</div>
           <div class="afa-cb-title">
             <b>${CONFIG.academyName}</b>
-            <span>Support Assistant • Replies instantly</span>
+            <span>Customer Support</span>
           </div>
           <button class="afa-cb-headbtn" id="afaCbRestart" title="Restart chat"><i class="fa-solid fa-rotate-right"></i></button>
           <button class="afa-cb-headbtn" id="afaCbClose" title="Close"><i class="fa-solid fa-xmark"></i></button>
@@ -488,7 +491,7 @@
 
         <div class="afa-cb-footer">
           <a class="afa-cb-wa" id="afaCbWaLink" href="${WHATSAPP_LINK('')}" target="_blank" rel="noopener">
-            <i class="fa-brands fa-whatsapp"></i> Chat with a real person on WhatsApp
+            <i class="fa-brands fa-whatsapp"></i> Chat with our team on WhatsApp
           </a>
           <div class="afa-cb-inputwrap">
             <input type="text" class="afa-cb-input" id="afaCbInput" placeholder="Type your question..." autocomplete="off" maxlength="300" />
@@ -602,7 +605,7 @@
     row.className = 'afa-cb-row afa-bot';
     row.id = 'afaCbTypingRow';
     row.innerHTML = `
-      <div class="afa-cb-mini-avatar"><i class="fa-solid fa-mosque"></i></div>
+      <div class="afa-cb-mini-avatar">AFA</div>
       <div class="afa-cb-bubble"><div class="afa-cb-typing"><span></span><span></span><span></span></div></div>
     `;
     els.body.appendChild(row);
@@ -675,10 +678,7 @@
     } catch (error) {
       console.error('[Al Fatima Chatbot] AI error:', error);
       removeTyping();
-      const reply = error?.providerStatus === 429
-        ? `The AI assistant is temporarily unavailable because the free Gemini usage limit has been reached. Please try again after the free quota resets.`
-        : AI_ERROR_REPLY;
-      pushBot({ reply, quickReplies: FALLBACK_QUICK });
+      pushBot({ reply: AI_ERROR_REPLY, quickReplies: FALLBACK_QUICK });
     } finally {
       els.input.disabled = false;
       els.send.disabled = false;
@@ -699,7 +699,7 @@
 
   function closePanel() {
     els.panel.classList.remove('afa-open');
-    els.launcherIcon.className = 'fa-solid fa-comment-dots';
+    els.launcherIcon.className = 'fa-solid fa-headset';
     setOpenSaved(false);
   }
 
