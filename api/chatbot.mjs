@@ -1,282 +1,808 @@
 /**
- * Al Fatima Academy - Customer Support Chatbot API
+ * Al Fatima Academy — Customer Support AI API
  * Vercel Serverless Function
  *
- * IMPORTANT:
- * This file intentionally uses ONE fixed free-tier model so an old
- * GEMINI_MODEL environment variable cannot accidentally switch the
- * chatbot back to a rate-limited model.
+ * FILE LOCATION:
+ * /api/chatbot.mjs
+ *
+ * REQUIRED ENVIRONMENT VARIABLE:
+ * GEMINI_API_KEY
+ *
+ * PURPOSE:
+ * - Customer support only
+ * - Al Fatima Academy / website questions only
+ * - No general Islam/Quran knowledge
+ * - No unrelated/general knowledge
+ * - Gemini Free Tier model
  */
 
 const MODEL = 'gemini-3.5-flash-lite';
-const MAX_QUESTION = 700;
-const MAX_HISTORY = 6;
-const MAX_KNOWLEDGE = 8;
+
+const GEMINI_URL =
+  `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
+
+
+/* ============================================================
+   FIXED CUSTOMER-SUPPORT RESPONSES
+============================================================ */
 
 const OUT_OF_SCOPE_TEXT =
-  'Sorry, I can only help with Al Fatima Academy and this website. Please ask me about our courses, classes, fees, trial, registration, timings, or contact details.';
+  "That question is outside my scope. I can only help with Al Fatima Academy, our website, courses, services, fees, classes, trial, and contact information.";
 
 const NOT_SURE_TEXT =
-  "I don't have enough verified information about that on this website. Please contact our team for help.";
+  "I don't have that specific academy information available right now. Please contact our team for the latest details.";
 
-const TEMPORARY_TEXT =
-  'Our customer support assistant is temporarily busy. Please try again in a little while.';
+const TEMPORARY_ERROR_TEXT =
+  "Our customer support assistant is temporarily unavailable. Please try again shortly.";
+
+
+/* ============================================================
+   STRICT SYSTEM INSTRUCTIONS
+============================================================ */
 
 const SYSTEM_INSTRUCTIONS = `
 You are the official customer support assistant for Al Fatima Academy.
 
-STRICT SCOPE:
-You may answer ONLY questions about Al Fatima Academy and the supplied website knowledge.
-Allowed topics include the academy, its services/courses, fees/packages, free trial,
-registration/enrollment, teachers, class duration, schedules/timings, online platforms,
-location, contact details, website pages/features, Quran reader on this website,
-languages, and payment/cancellation information when explicitly supported by the supplied
-website knowledge.
+YOUR ONLY PURPOSE:
+Help customers with Al Fatima Academy and its website.
 
-Do NOT answer general knowledge, religion, Islamic questions, Quran definitions, science,
-Earth/science questions, celebrities, sports, politics, coding, mathematics, entertainment,
-or unrelated technology. Even if you know the answer, refuse out-of-scope questions.
+ALLOWED:
+- Al Fatima Academy
+- About the academy
+- Website pages and features
+- Academy services
+- Courses
+- Noorani / Madni Qaida
+- Tajweed-ul-Quran as an academy course
+- Nazra & Hifz Quran as an academy course
+- Islamic Supplications & Etiquette only as an academy course
+- Free trial
+- Registration
+- Enrollment
+- Fees
+- Packages
+- Plans
+- Class duration
+- Class frequency
+- Teachers
+- Tutors
+- Female tutors
+- Zoom
+- Google Meet
+- Timings
+- Scheduling
+- Student age groups
+- Location
+- Countries served
+- WhatsApp
+- Email
+- Contact information
+- Quran Reader as a WEBSITE FEATURE
+- Website languages
+- Payment information available in the supplied website data
+- Website navigation
+- Follow-up questions clearly related to the same customer-support conversation
 
-For academy-specific questions, WEBSITE KNOWLEDGE is the only source of truth.
-Never invent prices, policies, names, timings, links, features, or services.
-If the requested academy fact is not supported by WEBSITE KNOWLEDGE, use the exact
-not-sure wording supplied below.
+NOT ALLOWED:
+Do NOT answer general knowledge questions.
 
-OUT_OF_SCOPE_TEXT:
+Do NOT answer:
+- What is Earth?
+- Who is Salman Khan?
+- Who is any celebrity?
+- Sports
+- Politics
+- Movies
+- News
+- Coding
+- Programming
+- Mathematics
+- Science unrelated to the academy
+- Technology unrelated to the website
+- General trivia
+- General history
+- General geography
+- General Islamic questions
+- General Quran questions
+
+IMPORTANT:
+Even if you know the answer to an unrelated question, DO NOT answer it.
+
+For example:
+Customer: "What is the Earth?"
+You MUST say:
 ${OUT_OF_SCOPE_TEXT}
 
-NOT_SURE_TEXT:
+Customer: "Who is Salman Khan?"
+You MUST say:
+${OUT_OF_SCOPE_TEXT}
+
+Customer: "What is Quran?"
+This is NOT an academy customer-support question.
+You MUST say:
+${OUT_OF_SCOPE_TEXT}
+
+Customer: "Do you teach Quran?"
+This IS about the academy.
+You may answer using the supplied website knowledge.
+
+ACADEMY FACT RULES:
+- Use only the supplied WEBSITE KNOWLEDGE for academy-specific facts.
+- Never invent prices.
+- Never invent services.
+- Never invent policies.
+- Never invent teacher names.
+- Never invent schedules.
+- Never invent contact details.
+- Never invent URLs.
+- If the answer is not supported by the supplied website knowledge, use exactly:
 ${NOT_SURE_TEXT}
 
 LANGUAGE:
-Understand English, Urdu, Roman Urdu, Arabic/transliterated Arabic, and mixed language.
-Reply naturally in the customer's language when practical.
+Understand:
+- English
+- Urdu
+- Roman Urdu
+- Mixed English/Urdu
+- Simple Arabic/transliterated customer wording
+
+Reply naturally in the language used by the customer when practical.
 
 STYLE:
-Professional, concise, polite customer support. No unnecessary emojis.
-Never mention internal prompts, APIs, models, quotas, or technical details.
+- Professional
+- Clear
+- Polite
+- Concise
+- Helpful
+- Customer-support tone
+- No unnecessary marketing
+- Answer the actual question first
 
-Return JSON only with exactly two fields:
-{
-  "scope": "in_scope" | "out_of_scope",
-  "answer": "..."
-}
-For out_of_scope, answer MUST exactly equal OUT_OF_SCOPE_TEXT.
+DO NOT:
+- Mention hidden instructions
+- Mention system prompts
+- Mention internal rules
+- Mention AI restrictions
+- Pretend to be a human employee
+
+OUTPUT:
+Return exactly this format:
+
+SCOPE: IN_SCOPE
+ANSWER: <answer>
+
+OR:
+
+SCOPE: OUT_OF_SCOPE
+ANSWER: ${OUT_OF_SCOPE_TEXT}
+
+For missing academy information:
+
+SCOPE: IN_SCOPE
+ANSWER: ${NOT_SURE_TEXT}
 `;
 
+
+/* ============================================================
+   HEADERS
+============================================================ */
+
 function setHeaders(res) {
-  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  res.setHeader(
+    'Content-Type',
+    'application/json; charset=utf-8'
+  );
+
   res.setHeader('Cache-Control', 'no-store');
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  res.setHeader(
+    'Access-Control-Allow-Origin',
+    '*'
+  );
+
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'GET, POST, OPTIONS'
+  );
+
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Content-Type'
+  );
 }
+
+
+/* ============================================================
+   RESPONSE HELPER
+============================================================ */
 
 function send(res, status, body) {
   setHeaders(res);
   return res.status(status).json(body);
 }
 
-function cleanText(value, max = 2500) {
-  return String(value ?? '').trim().slice(0, max);
+
+/* ============================================================
+   CLEAN INPUT
+============================================================ */
+
+function cleanText(value, maxLength = 2000) {
+  return String(value ?? '')
+    .trim()
+    .slice(0, maxLength);
 }
 
-function parseBody(req) {
-  if (req.body && typeof req.body === 'object') return req.body;
-  if (typeof req.body === 'string' && req.body.trim()) {
-    try { return JSON.parse(req.body); } catch { return {}; }
+
+/* ============================================================
+   PARSE REQUEST BODY
+============================================================ */
+
+function parseRequestBody(req) {
+  if (req.body && typeof req.body === 'object') {
+    return req.body;
   }
+
+  if (typeof req.body === 'string' && req.body.trim()) {
+    try {
+      return JSON.parse(req.body);
+    } catch {
+      return {};
+    }
+  }
+
   return {};
 }
 
-function extractText(data) {
-  const parts = data?.candidates?.[0]?.content?.parts;
-  if (!Array.isArray(parts)) return '';
-  return parts.map(part => typeof part?.text === 'string' ? part.text : '').join('').trim();
-}
 
-function parseJson(text) {
-  if (!text) return null;
-  try { return JSON.parse(text); } catch {}
-
-  const fenced = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
-  if (fenced) {
-    try { return JSON.parse(fenced[1]); } catch {}
-  }
-
-  const start = text.indexOf('{');
-  const end = text.lastIndexOf('}');
-  if (start >= 0 && end > start) {
-    try { return JSON.parse(text.slice(start, end + 1)); } catch {}
-  }
-  return null;
-}
+/* ============================================================
+   HISTORY
+============================================================ */
 
 function normalizeHistory(history) {
-  if (!Array.isArray(history)) return [];
+  if (!Array.isArray(history)) {
+    return [];
+  }
+
   return history
-    .slice(-MAX_HISTORY)
-    .map(item => ({
-      role: item?.role === 'model' || item?.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: cleanText(item?.content, 700) }]
+    .slice(-6)
+    .map((item) => {
+      const role =
+        item?.role === 'assistant'
+          ? 'model'
+          : 'user';
+
+      const content =
+        cleanText(item?.content, 900);
+
+      return {
+        role,
+        content
+      };
+    })
+    .filter((item) => item.content)
+    .map((item) => ({
+      role: item.role,
+      parts: [
+        {
+          text: item.content
+        }
+      ]
+    }));
+}
+
+
+/* ============================================================
+   WEBSITE KNOWLEDGE
+============================================================ */
+
+function normalizeKnowledge(knowledge) {
+  if (!Array.isArray(knowledge)) {
+    return [];
+  }
+
+  return knowledge
+    .slice(0, 12)
+    .map((item) => ({
+      id: cleanText(item?.id, 100),
+      answer: cleanText(item?.answer, 1800)
     }))
-    .filter(item => item.parts[0].text);
+    .filter((item) => item.id || item.answer);
 }
 
-function normalizeKnowledge(items) {
-  if (!Array.isArray(items)) return [];
-  return items.slice(0, MAX_KNOWLEDGE).map(item => ({
-    id: cleanText(item?.id, 80),
-    answer: cleanText(item?.answer, 1400)
-  })).filter(item => item.answer);
+
+/* ============================================================
+   BASIC PRE-CHECK
+   This saves API calls for obviously unrelated questions.
+============================================================ */
+
+function looksClearlyOutOfScope(question) {
+  const text = String(question || '')
+    .toLowerCase()
+    .trim();
+
+  const unrelatedPatterns = [
+    /\bwhat is earth\b/,
+    /\bwho is salman khan\b/,
+    /\bwho is (a|the)?\s*celebrity\b/,
+    /\bwho is (actor|actress|singer)\b/,
+    /\bcricket\b/,
+    /\bfootball\b/,
+    /\bsoccer\b/,
+    /\bbasketball\b/,
+    /\bpolitics\b/,
+    /\belection\b/,
+    /\bpresident\b/,
+    /\bprime minister\b/,
+    /\bmovie\b/,
+    /\bhollywood\b/,
+    /\bbollywood\b/,
+    /\bnasa\b/,
+    /\bpython programming\b/,
+    /\bjavascript\b/,
+    /\bhtml\b/,
+    /\bcss\b/,
+    /\breact js\b/,
+    /\bcoding\b/,
+    /\bprogramming\b/,
+    /\bwrite code\b/,
+    /\bmath\b/,
+    /\bmathematics\b/,
+    /\bphysics\b/,
+    /\bchemistry\b/,
+    /\bgeography\b/,
+    /\bworld history\b/
+  ];
+
+  return unrelatedPatterns.some(
+    (pattern) => pattern.test(text)
+  );
 }
 
-async function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+
+/* ============================================================
+   GEMINI TEXT EXTRACTION
+============================================================ */
+
+function extractGeminiText(data) {
+  const parts =
+    data?.candidates?.[0]?.content?.parts;
+
+  if (!Array.isArray(parts)) {
+    return '';
+  }
+
+  return parts
+    .map((part) => {
+      return typeof part?.text === 'string'
+        ? part.text
+        : '';
+    })
+    .join('')
+    .trim();
 }
 
-async function callGemini({ apiKey, question, history, knowledge, retry503 = true }) {
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
 
-  const prompt = [
+/* ============================================================
+   PARSE AI RESPONSE
+============================================================ */
+
+function parseAssistantOutput(text) {
+  const cleaned = String(text || '')
+    .replace(/```(?:text|json)?/gi, '')
+    .replace(/```/g, '')
+    .trim();
+
+  const scopeMatch =
+    cleaned.match(
+      /^SCOPE:\s*(IN_SCOPE|OUT_OF_SCOPE)\s*$/im
+    );
+
+  const answerMatch =
+    cleaned.match(
+      /^ANSWER:\s*([\s\S]*)$/im
+    );
+
+  const scope =
+    scopeMatch?.[1] || 'OUT_OF_SCOPE';
+
+  const answer =
+    cleanText(
+      answerMatch?.[1] || '',
+      2500
+    );
+
+  if (scope === 'OUT_OF_SCOPE') {
+    return {
+      scope: 'out_of_scope',
+      answer: OUT_OF_SCOPE_TEXT
+    };
+  }
+
+  return {
+    scope: 'in_scope',
+    answer: answer || NOT_SURE_TEXT
+  };
+}
+
+
+/* ============================================================
+   BUILD PROMPT
+============================================================ */
+
+function buildPrompt(
+  question,
+  websiteKnowledge
+) {
+  return [
     'WEBSITE KNOWLEDGE:',
-    JSON.stringify(knowledge),
+    JSON.stringify(websiteKnowledge),
+
     '',
+
     'CUSTOMER QUESTION:',
-    question
+    question,
+
+    '',
+
+    'IMPORTANT:',
+    'Answer only if the question is about Al Fatima Academy or its website.',
+    'Do not answer unrelated or general knowledge questions.',
+    'Use only supported academy information.',
+    'Return exactly the required SCOPE and ANSWER format.'
   ].join('\n');
+}
 
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 15000);
 
-  try {
-    const response = await fetch(endpoint, {
+/* ============================================================
+   GEMINI REQUEST
+============================================================ */
+
+async function callGemini({
+  apiKey,
+  contents,
+  signal
+}) {
+  const response = await fetch(
+    GEMINI_URL,
+    {
       method: 'POST',
+
       headers: {
         'Content-Type': 'application/json',
         'x-goog-api-key': apiKey
       },
+
       body: JSON.stringify({
-        systemInstruction: { parts: [{ text: SYSTEM_INSTRUCTIONS }] },
-        contents: [
-          ...history,
-          { role: 'user', parts: [{ text: prompt }] }
-        ],
+        systemInstruction: {
+          parts: [
+            {
+              text: SYSTEM_INSTRUCTIONS
+            }
+          ]
+        },
+
+        contents,
+
         generationConfig: {
-          responseMimeType: 'application/json',
-          maxOutputTokens: 350
+          maxOutputTokens: 320
         }
       }),
-      signal: controller.signal
-    });
 
-    const raw = await response.text();
-
-    if (response.ok) {
-      let data;
-      try { data = JSON.parse(raw); } catch {
-        return { ok: false, status: 502, detail: 'Gemini returned non-JSON HTTP content.' };
-      }
-      return { ok: true, data };
+      signal
     }
+  );
 
-    let detail = raw;
-    try {
-      const parsed = JSON.parse(raw);
-      detail = parsed?.error?.message || raw;
-    } catch {}
+  const raw =
+    await response.text();
 
-    // 503 is a temporary capacity issue: one controlled retry only.
-    if (response.status === 503 && retry503) {
-      await sleep(1200);
-      return callGemini({ apiKey, question, history, knowledge, retry503: false });
-    }
+  let data = null;
 
-    return { ok: false, status: response.status, detail: cleanText(detail, 1000) };
-  } catch (error) {
-    return {
-      ok: false,
-      status: error?.name === 'AbortError' ? 504 : 500,
-      detail: error?.name === 'AbortError' ? 'Gemini request timed out.' : (error?.message || 'Request failed.')
-    };
-  } finally {
-    clearTimeout(timeout);
+  try {
+    data = JSON.parse(raw);
+  } catch {
+    data = null;
   }
+
+  return {
+    ok: response.ok,
+    status: response.status,
+    data,
+    text: extractGeminiText(data)
+  };
 }
 
-export default async function handler(req, res) {
+
+/* ============================================================
+   MAIN VERCEL FUNCTION
+============================================================ */
+
+export default async function handler(
+  req,
+  res
+) {
+
+  /* -----------------------------
+     OPTIONS
+  ----------------------------- */
+
   if (req.method === 'OPTIONS') {
     setHeaders(res);
     return res.status(204).end();
   }
 
+
+  /* -----------------------------
+     HEALTH CHECK
+  ----------------------------- */
+
   if (req.method === 'GET') {
     return send(res, 200, {
       ok: true,
-      configured: Boolean(process.env.GEMINI_API_KEY),
+      configured: Boolean(
+        process.env.GEMINI_API_KEY
+      ),
       provider: 'gemini',
       model: MODEL
     });
   }
 
+
+  /* -----------------------------
+     METHOD CHECK
+  ----------------------------- */
+
   if (req.method !== 'POST') {
-    return send(res, 405, { error: 'Method not allowed' });
+    return send(res, 405, {
+      error: 'Method not allowed'
+    });
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
+
+  /* -----------------------------
+     API KEY
+  ----------------------------- */
+
+  const apiKey =
+    process.env.GEMINI_API_KEY;
+
   if (!apiKey) {
-    console.error('[Al Fatima Chatbot] GEMINI_API_KEY is missing.');
-    return send(res, 500, { error: 'Chatbot is not configured.' });
+
+    console.error(
+      '[Al Fatima Chatbot] GEMINI_API_KEY missing'
+    );
+
+    return send(res, 200, {
+      scope: 'temporary',
+      answer: TEMPORARY_ERROR_TEXT
+    });
   }
 
-  const body = parseBody(req);
-  const question = cleanText(body?.question, MAX_QUESTION);
-  if (!question) return send(res, 400, { error: 'Question is required.' });
 
-  const history = normalizeHistory(body?.history);
-  const knowledge = normalizeKnowledge(body?.websiteKnowledge);
+  /* -----------------------------
+     REQUEST BODY
+  ----------------------------- */
 
-  const result = await callGemini({ apiKey, question, history, knowledge });
+  const body =
+    parseRequestBody(req);
 
-  if (!result.ok) {
-    console.error('[Al Fatima Chatbot] Gemini error:', result.status, result.detail);
+  const question =
+    cleanText(
+      body?.question,
+      700
+    );
 
-    // Never turn provider throttling/capacity issues into a frontend 502.
-    if (result.status === 429 || result.status === 503) {
+  if (!question) {
+    return send(res, 400, {
+      error: 'Question is required.'
+    });
+  }
+
+
+  /* -----------------------------
+     FAST OUT-OF-SCOPE CHECK
+  ----------------------------- */
+
+  if (
+    looksClearlyOutOfScope(
+      question
+    )
+  ) {
+    return send(res, 200, {
+      scope: 'out_of_scope',
+      answer: OUT_OF_SCOPE_TEXT
+    });
+  }
+
+
+  /* -----------------------------
+     DATA FROM FRONTEND
+  ----------------------------- */
+
+  const websiteKnowledge =
+    normalizeKnowledge(
+      body?.websiteKnowledge
+    );
+
+  const history =
+    normalizeHistory(
+      body?.history
+    );
+
+
+  /* -----------------------------
+     BUILD CONTENT
+  ----------------------------- */
+
+  const contents = [
+
+    ...history,
+
+    {
+      role: 'user',
+
+      parts: [
+        {
+          text: buildPrompt(
+            question,
+            websiteKnowledge
+          )
+        }
+      ]
+    }
+
+  ];
+
+
+  /* -----------------------------
+     TIMEOUT
+  ----------------------------- */
+
+  const controller =
+    new AbortController();
+
+  const timeout =
+    setTimeout(
+      () => controller.abort(),
+      18000
+    );
+
+
+  /* -----------------------------
+     GEMINI REQUEST
+  ----------------------------- */
+
+  try {
+
+    let result =
+      await callGemini({
+        apiKey,
+        contents,
+        signal: controller.signal
+      });
+
+
+    /* --------------------------------
+       ONLY ONE RETRY FOR 503
+       NEVER RETRY 429
+    -------------------------------- */
+
+    if (result.status === 503) {
+
+      await new Promise(
+        (resolve) =>
+          setTimeout(
+            resolve,
+            1200
+          )
+      );
+
+      result =
+        await callGemini({
+          apiKey,
+          contents,
+          signal: controller.signal
+        });
+    }
+
+
+    /* -----------------------------
+       PROVIDER ERROR
+    ----------------------------- */
+
+    if (!result.ok) {
+
+      const providerDetail =
+        cleanText(
+          result.data?.error?.message,
+          300
+        );
+
+      console.error(
+        '[Al Fatima Chatbot] Gemini error:',
+        {
+          status: result.status,
+          detail: providerDetail
+        }
+      );
+
+
+      /* -----------------------------
+         RATE LIMIT
+      ----------------------------- */
+
+      if (result.status === 429) {
+
+        return send(res, 200, {
+          scope: 'temporary',
+          answer:
+            'The customer support assistant is temporarily busy. Please try again in a moment.'
+        });
+      }
+
+
+      /* -----------------------------
+         TEMPORARY SERVER ERROR
+      ----------------------------- */
+
+      if (
+        result.status >= 500 &&
+        result.status <= 599
+      ) {
+
+        return send(res, 200, {
+          scope: 'temporary',
+          answer:
+            'The customer support assistant is temporarily unavailable. Please try again shortly.'
+        });
+      }
+
+
+      /* -----------------------------
+         OTHER PROVIDER ERROR
+      ----------------------------- */
+
       return send(res, 200, {
         scope: 'temporary',
-        answer: TEMPORARY_TEXT
+        answer: TEMPORARY_ERROR_TEXT
       });
     }
 
-    return send(res, 502, {
-      error: 'AI service request failed.',
-      providerStatus: result.status,
-      detail: result.detail
-    });
-  }
 
-  const modelText = extractText(result.data);
-  const parsed = parseJson(modelText);
+    /* -----------------------------
+       PARSE AI RESPONSE
+    ----------------------------- */
 
-  if (!parsed) {
-    console.error('[Al Fatima Chatbot] Could not parse Gemini response:', modelText);
+    const parsed =
+      parseAssistantOutput(
+        result.text
+      );
+
+
+    /* -----------------------------
+       FINAL RESPONSE
+    ----------------------------- */
+
+    return send(
+      res,
+      200,
+      parsed
+    );
+
+  } catch (error) {
+
+    console.error(
+      '[Al Fatima Chatbot] Server error:',
+      error
+    );
+
     return send(res, 200, {
       scope: 'temporary',
-      answer: 'Sorry, I couldn’t process that right now. Please try again in a moment.'
+      answer: TEMPORARY_ERROR_TEXT
     });
+
+  } finally {
+
+    clearTimeout(timeout);
+
   }
-
-  const scope = parsed.scope === 'in_scope' ? 'in_scope' : 'out_of_scope';
-  const answer = cleanText(parsed.answer, 2500);
-
-  if (scope === 'out_of_scope') {
-    return send(res, 200, { scope, answer: OUT_OF_SCOPE_TEXT });
-  }
-
-  if (!answer) {
-    return send(res, 200, { scope: 'in_scope', answer: NOT_SURE_TEXT });
-  }
-
-  return send(res, 200, { scope: 'in_scope', answer });
 }
