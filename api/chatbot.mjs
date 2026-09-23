@@ -198,18 +198,17 @@ export default async function handler(req, res) {
               history
             ),
             generationConfig: {
-              temperature: 0.2,
               maxOutputTokens: 600,
               responseMimeType: 'application/json',
               responseSchema: {
-                type: 'OBJECT',
+                type: 'object',
                 properties: {
                   scope: {
-                    type: 'STRING',
+                    type: 'string',
                     enum: ['in_scope', 'out_of_scope']
                   },
                   answer: {
-                    type: 'STRING'
+                    type: 'string'
                   }
                 },
                 required: ['scope', 'answer']
@@ -226,10 +225,19 @@ export default async function handler(req, res) {
     const rawApiBody = await geminiResponse.text();
 
     if (!geminiResponse.ok) {
-      console.error('[Al Fatima Chatbot] Gemini API error:', geminiResponse.status, rawApiBody);
+      let providerMessage = '';
+      try {
+        const errorJson = JSON.parse(rawApiBody);
+        providerMessage = cleanText(
+          errorJson?.error?.message || errorJson?.error?.status,
+          300
+        );
+      } catch {}
+      console.error('[Al Fatima Chatbot] Gemini API error:', geminiResponse.status, providerMessage || rawApiBody);
       return send(res, 502, {
         error: 'AI service request failed.',
-        providerStatus: geminiResponse.status
+        providerStatus: geminiResponse.status,
+        detail: providerMessage || undefined
       });
     }
 
