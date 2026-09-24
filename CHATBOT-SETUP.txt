@@ -1,10 +1,35 @@
-# Al Fatima AI Chatbot
+# Al Fatima AI Chatbot — Setup
 
-1. Put chatbot-widget.js in your project root/public script location.
-2. Put api/chatbot.mjs in your Vercel project under api/chatbot.mjs.
-3. Add OPENAI_API_KEY in Vercel Environment Variables.
+FILES
+1. chatbot-widget.js   -> project root (auto-loaded on every page by components-loader.js)
+2. api/chatbot.mjs     -> Vercel serverless function (Gemini)
 
+VERCEL ENVIRONMENT VARIABLES
+- GEMINI_API_KEY   (required)  Your Google AI Studio / Gemini API key.
+- GEMINI_MODELS    (OPTIONAL)  Comma separated model list, tried in order.
+                   Leave it EMPTY / do not create it to use the built-in safe list:
+                   gemini-3.1-flash-lite, gemini-3.5-flash-lite, gemini-3.5-flash, gemini-3.6-flash
+                   If you set it, it REPLACES the built-in list.
+                   Do not put gemini-2.5-* models in it (scheduled for shutdown in Oct 2026).
 
-Troubleshooting note:
-The AI route reads the model's REST Responses API output from the response `output` array.
-After changing Vercel Environment Variables, redeploy the project so the function receives the new values.
+After changing any Environment Variable, REDEPLOY the project.
+
+HOW THE CHATBOT WORKS
+1. Short, clear questions (fees, packages, trial, contact, courses ...) are answered
+   instantly by the widget's built-in knowledge base (no API call).
+2. Longer questions go to /api/chatbot (Gemini). The server tries the models in order,
+   retries once on 503, and skips to the next model on timeout / 429 / 404.
+3. If the AI is busy or down, the widget shows the best built-in answer instead of an
+   error. Only genuinely unrelated questions show "I can only help with Al Fatima Academy".
+
+HEALTH CHECK
+Open  https://YOUR-SITE/api/chatbot  in the browser. You should see:
+{"ok":true,"configured":true,"provider":"gemini","models":[ ... ]}
+
+TROUBLESHOOTING
+- Vercel -> Project -> Logs. Search "[Al Fatima Chatbot]".
+  "OK model=... time=...ms"  = AI answered.
+  "Model failed: {...}"      = shows model, status (503 busy, 429 limit, 404 wrong model name)
+                               and whether it timed out.
+- If facts on the website change (fees, phone numbers, plans) update the KB in
+  chatbot-widget.js too.

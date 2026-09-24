@@ -9,8 +9,10 @@
  * GEMINI_API_KEY
  *
  * OPTIONAL ENVIRONMENT VARIABLE:
- * GEMINI_MODELS  -> comma separated, tried in order
- *   example: gemini-3.5-flash-lite,gemini-3.6-flash,gemini-2.5-flash
+ * GEMINI_MODELS  -> comma separated, tried in order.
+ *   If you do NOT set it, the safe default list below is used.
+ *   (If you set it, it REPLACES the default list.)
+ *   example: gemini-3.1-flash-lite,gemini-3.5-flash-lite,gemini-3.5-flash
  *
  * PURPOSE:
  * - Customer support only
@@ -25,10 +27,13 @@
    busy (429), missing (404) or slow, the next model is used.
 ============================================================ */
 
+// NOTE: Gemini 2.5 models are scheduled for shutdown in Oct 2026,
+// so they are intentionally NOT part of the default chain.
 const DEFAULT_MODELS = [
+  'gemini-3.1-flash-lite',
   'gemini-3.5-flash-lite',
-  'gemini-3.6-flash',
-  'gemini-2.5-flash'
+  'gemini-3.5-flash',
+  'gemini-3.6-flash'
 ];
 
 const MODEL_CHAIN = [
@@ -41,10 +46,10 @@ const MODEL_CHAIN = [
 ];
 
 // Timeout for EACH single attempt (milliseconds)
-const ATTEMPT_TIMEOUT_MS = 8000;
+const ATTEMPT_TIMEOUT_MS = 7000;
 
 // Stop trying new attempts after this total time (milliseconds)
-const TOTAL_DEADLINE_MS = 24000;
+const TOTAL_DEADLINE_MS = 22000;
 
 // Wait before retrying the same model after a 503 (milliseconds)
 const RETRY_DELAY_MS = 800;
@@ -292,18 +297,43 @@ function normalizeHistory(history) {
     return [];
   }
 
-  return history
-    .slice(-6)
-    .map((item) => {
-      const role = item?.role === 'assistant' ? 'model' : 'user';
-      const content = cleanText(item?.content, 900);
-      return { role, content };
-    })
-    .filter((item) => item.content)
+  // 1) Clean + map roles
+  const cleaned = history
+    .slice(-8)
     .map((item) => ({
-      role: item.role,
-      parts: [{ text: item.content }]
-    }));
+      role: item?.role === 'assistant' ? 'model' : 'user',
+      content: cleanText(item?.content, 900)
+    }))
+    .filter((item) => item.content);
+
+  // 2) Merge consecutive messages with the same role
+  const merged = [];
+
+  for (const item of cleaned) {
+    const last = merged[merged.length - 1];
+
+    if (last && last.role === item.role) {
+      last.content = `${last.content}\n${item.content}`.slice(0, 1200);
+    } else {
+      merged.push({ ...item });
+    }
+  }
+
+  // 3) History must START with a user turn (drop leading bot greeting)
+  while (merged.length && merged[0].role !== 'user') {
+    merged.shift();
+  }
+
+  // 4) History must END with a model turn, because the new question
+  //    is appended as the final user turn.
+  while (merged.length && merged[merged.length - 1].role !== 'model') {
+    merged.pop();
+  }
+
+  return merged.slice(-6).map((item) => ({
+    role: item.role,
+    parts: [{ text: item.content }]
+  }));
 }
 
 
@@ -399,15 +429,25 @@ function parseAssistantOutput(text) {
     .replace(/```/g, '')
     .trim();
 
-  const scopeMatch = cleaned.match(
-    /^SCOPE:\s*(IN_SCOPE|OUT_OF_SCOPE)\s*$/im
-  );
+  const scopeMatch = cleaned.match(/SCOPE:\s*(IN_SCOPE|OUT_OF_SCOPE)/i);
 
-  const answerMatch = cleaned.match(/^ANSWER:\s*([\s\S]*)$/im);
+  // The model ignored the required format. Do NOT guess "out of scope"
+  // (that would wrongly refuse real customer questions). Report a
+  // temporary problem instead; the website widget then falls back to
+  // its own built-in answers.
+  if (!scopeMatch) {
+    console.error(
+      '[Al Fatima Chatbot] Unparseable model output:',
+      cleanText(cleaned, 200)
+    );
 
-  const scope = scopeMatch?.[1] || 'OUT_OF_SCOPE';
+    return {
+      scope: 'temporary',
+      answer: TEMPORARY_ERROR_TEXT
+    };
+  }
 
-  const answer = cleanText(answerMatch?.[1] || '', 2500);
+  const scope = scopeMatch[1].toUpperCase();
 
   if (scope === 'OUT_OF_SCOPE') {
     return {
@@ -415,6 +455,10 @@ function parseAssistantOutput(text) {
       answer: OUT_OF_SCOPE_TEXT
     };
   }
+
+  const answerMatch = cleaned.match(/ANSWER:\s*([\s\S]*)$/i);
+
+  const answer = cleanText(answerMatch?.[1] || '', 2500);
 
   return {
     scope: 'in_scope',
@@ -472,7 +516,7 @@ async function callGemini({ apiKey, model, contents }) {
         contents,
 
         generationConfig: {
-          maxOutputTokens: 400
+          maxOutputTokens: 1024
         }
       }),
 

@@ -5,8 +5,17 @@
  *
  * A self-contained, dependency-free FAQ / support assistant for the
  * whole site. It injects its own CSS + HTML, so it can be dropped
- * into ANY page with a single <script> tag — no build step, no
- * external account, no API key.
+ * into ANY page with a single <script> tag — no build step.
+ *
+ * HOW IT ANSWERS (local-first):
+ *   1. Clear, short questions (fees, packages, trial, contact ...)
+ *      are answered instantly from the built-in KNOWLEDGE BASE.
+ *   2. Longer / natural questions go to the AI route (/api/chatbot).
+ *   3. If the AI route is slow, busy or down, the widget falls back
+ *      to the best matching built-in answer, so visitors never see a
+ *      confusing error for a normal academy question.
+ *
+ * (The Gemini API key lives ONLY on the server, in Vercel env vars.)
  *
  * It is already auto-loaded on every page by components-loader.js,
  * so you normally do NOT need to add anything to the HTML files.
@@ -33,6 +42,7 @@
     location: 'Lahore, Punjab, Pakistan (serving students worldwide)',
     founder: 'Qari Muhammad Shafiq Raza',
     aiEndpoint: '/api/chatbot',
+    aiTimeoutMs: 30000,             // server may try several models (max ~22s)
     storageKey: 'afa_chatbot_history_v1',
     openStateKey: 'afa_chatbot_open_v1'
   };
@@ -49,25 +59,25 @@
   const KB = [
     {
       id: 'greeting',
-      keywords: ['hi', 'hello', 'hey', 'good morning', 'good afternoon', 'good evening', 'salam', 'assalam o alaikum', 'assalamualaikum', 'aoa'],
+      keywords: ['hi', 'hello', 'hey', 'good morning', 'good afternoon', 'good evening', 'salam', 'assalam o alaikum', 'assalamualaikum', 'aoa', 'سلام', 'السلام علیکم'],
       reply: `Welcome to <b>${CONFIG.academyName}</b>. I’m here to assist you with our website, courses, fees, classes, free trial, registration, schedules, and contact information.<br>How can I help you today?`,
       quickReplies: ['courses', 'trial', 'packages', 'contact']
     },
     {
       id: 'about_academy',
-      keywords: ['about', 'about academy', 'who are you', 'what is al fatima academy', 'academy information', 'academy kya hai', 'about us', 'introduction', 'al quran international', 'al fatima academy'],
+      keywords: ['about academy', 'who are you', 'what is al fatima academy', 'academy information', 'academy kya hai', 'about us', 'introduction', 'al quran international', 'al fatima academy'],
       reply: `<b>${CONFIG.academyName}</b> is a project of <b>${CONFIG.parentOrg}</b>. The academy provides professional online Quran-learning programs with personalized 1-on-1 sessions for children and adults worldwide.<br><br>Our website highlights certified tutors, flexible scheduling, live classes through Zoom and Google Meet, and a 3-day free trial.`,
       quickReplies: ['courses', 'teachers', 'trial']
     },
     {
       id: 'mission',
-      keywords: ['mission', 'goal', 'purpose', 'what is your mission', 'aim', 'why al fatima academy', 'learning environment', 'teaching approach'],
+      keywords: ['mission', 'what is your mission', 'why al fatima academy', 'learning environment', 'teaching approach'],
       reply: `Al Fatima Academy’s website describes its mission as making Quran learning accessible, correct, interactive, and professional for students worldwide.<br><br>The academy emphasizes personalized 1-on-1 attention, flexible scheduling, certified educators, and a focused learning environment.`,
       quickReplies: ['teachers', 'courses', 'timings']
     },
     {
       id: 'courses',
-      keywords: ['course', 'courses', 'service', 'services', 'program', 'programs', 'what do you teach', 'what can i learn', 'subjects', 'offer', 'offering', 'classes offered', 'study options', 'kya parhate', 'kya sikhate', 'kon se course', 'what services do you provide', 'What are your services', 'what are your service'],
+      keywords: ['course', 'courses', 'service', 'services', 'program', 'programs', 'what do you teach', 'what can i learn', 'subjects', 'classes offered', 'study options', 'kya parhate', 'kya sikhate', 'kon se course', 'what services do you provide', 'what are your services', 'what are your service', 'کورس', 'کورسز'],
       reply: `Our main website programs are:<br><br>1. <b>Noorani / Madni Qaida</b> — Quran-reading foundation for beginners.<br>2. <b>Tajweed-ul-Quran</b>  pronunciation, articulation, and Tajweed rules.<br>3. <b>Nazra &amp; Hifz Quran</b> — fluent Quran reading and memorization.<br>4. <b>Islamic Supplications &amp; Etiquette</b> — daily Duas, Kalimas, Salah training, and Islamic manners.<br><br>For full descriptions, please visit the <a href="/services" target="_blank">Services page</a>.`,
       quickReplies: ['course_qaida', 'course_tajweed', 'course_hifz', 'course_duas']
     },
@@ -97,19 +107,19 @@
     },
     {
       id: 'trial',
-      keywords: ['trial', 'free trial', '3 day trial', '3-day trial', 'free class', 'demo class', 'try a class', 'trial class', 'free demo', 'muft class'],
+      keywords: ['ٹرائل', 'فری ٹرائل', 'مفت کلاس', 'trial', 'free trial', '3 day trial', '3-day trial', 'free class', 'demo class', 'try a class', 'trial class', 'free demo', 'muft class'],
       reply: `Yes. The website offers a <b>3-day free trial</b> with no credit card required.<br><br>You can apply through the registration form on the <a href="/" target="_blank">Home</a> or <a href="/services" target="_blank">Services</a> page. The website says an administrator or representative will contact you within 24 hours to arrange the trial.`,
       quickReplies: ['register', 'packages', 'contact']
     },
     {
       id: 'register',
-      keywords: ['register', 'registration', 'enroll', 'enrollment', 'admission', 'join', 'sign up', 'apply', 'how to join', 'how do i register', 'admission kaise', 'join kaise'],
+      keywords: ['register', 'registration', 'enroll', 'enrollment', 'admission', 'join', 'sign up', 'apply', 'how to join', 'how do i register', 'admission kaise', 'join kaise', 'داخلہ', 'رجسٹریشن'],
       reply: `You can register through the application form on the website’s <a href="/" target="_blank">Home</a> or <a href="/services" target="_blank">Services</a> page.<br><br>The form asks for your name, WhatsApp number, course interest, country/timezone, and preferred timing or special instructions. You can also contact the academy directly for assistance.`,
       quickReplies: ['trial', 'courses', 'contact']
     },
     {
       id: 'packages',
-      keywords: ['fee', 'fees', 'price', 'pricing', 'package', 'packages', 'plan', 'plans', 'cost', 'monthly fee', 'charges', 'kitni fee', 'kitna paisa'],
+      keywords: ['fee', 'fees', 'price', 'prices', 'pricing', 'package', 'packages', 'plan', 'plans', 'cost', 'rate', 'rates', 'tuition', 'monthly fee', 'monthly charges', 'fee structure', 'charges', 'kitni fee', 'kitni fees', 'fees kitni', 'kitna paisa', 'kitne paise', 'فیس', 'پیکج', 'پیکجز', 'قیمت'],
       reply: `The website has three flexible 1-on-1 plans:<br><br><b>Basic</b> — 2 days/week, 8 classes/month, 30-minute live classes, basic Tajweed &amp; Qaida, and essential daily Duas.<br><b>Standard</b> — 3 days/week, 12 classes/month, 30-minute live classes, proper Tajweed, Quran recitation &amp; Hifz, plus a monthly progress report.<br><b>Intensive</b> — 5 days/week, 20 classes/month, full Hifz focus, advanced pronunciation, flexible time adjustments, and a senior Quran teacher.<br><br>The website uses country selection to display customized monthly pricing.`,
       quickReplies: ['trial', 'contact', 'course_hifz']
     },
@@ -127,25 +137,25 @@
     },
     {
       id: 'teachers',
-      keywords: ['teacher', 'teachers', 'tutor', 'tutors', 'qari', 'qari sahab', 'huffaz', 'hafiz teacher', 'female teacher', 'lady teacher', 'male teacher', 'instructor', 'qualified tutor'],
+      keywords: ['teacher', 'teachers', 'tutor', 'tutors', 'qari', 'qari sahab', 'huffaz', 'hafiz teacher', 'female teacher', 'female tutor', 'lady teacher', 'lady tutor', 'male teacher', 'instructor', 'qualified tutor', 'founder', 'qari muhammad shafiq raza', 'ustad', 'ustani', 'استاد', 'ٹیچر', 'قاری'],
       reply: `The website describes its teachers as <b>certified Huffaz and Qaris</b> with experience in Arabic phonetics and Quranic recitation.<br><br><b>Qari Muhammad Shafiq Raza</b> is presented as the founder and senior Quran teacher with <b>15+ years</b> of online and offline teaching experience.<br><br>Female tutors are also available for sisters and young girls.`,
       quickReplies: ['courses', 'trial']
     },
     {
       id: 'platform',
-      keywords: ['zoom', 'google meet', 'meet', 'online class', 'class platform', 'how classes work', 'video call', 'software', 'virtual class'],
+      keywords: ['zoom', 'google meet', 'online class', 'class platform', 'how classes work', 'video call', 'software', 'virtual class'],
       reply: `Classes are conducted live through <b>Zoom</b> or <b>Google Meet</b>.<br><br>The website presents Zoom as the video classroom option and Google Meet as a browser-based option. Students receive the class link from the tutor or administration.`,
       quickReplies: ['timings', 'trial']
     },
     {
       id: 'timings',
-      keywords: ['timing', 'timings', 'schedule', 'class time', 'what time', 'when are classes', '24/7', 'timezone', 'time zone', 'kab class', 'available time'],
+      keywords: ['timing', 'timings', 'schedule', 'class time', 'what time', 'when are classes', '24/7', 'timezone', 'time zone', 'kab class', 'classes kab', 'available time', 'ٹائمنگ'],
       reply: `The academy website states that classes operate <b>24 hours a day, 7 days a week</b> so schedules can be adjusted for students in different time zones.<br><br>Your preferred timing can be provided during registration.`,
       quickReplies: ['trial', 'contact']
     },
     {
       id: 'age_group',
-      keywords: ['age', 'kids', 'children', 'adults', 'child', 'for kids', 'for adults', 'all ages', 'bachay', 'bache', 'umar', 'who can join'],
+      keywords: ['age group', 'age limit', 'what age', 'kids', 'children', 'adults', 'child', 'for kids', 'for adults', 'all ages', 'bachay', 'bache', 'umar', 'who can join'],
       reply: `The website says its learning programs are available for <b>children and adults of all ages</b>, from beginners to students who want to refine their Quran reading and Tajweed. Sessions are personalized to the learner’s pace.`,
       quickReplies: ['courses', 'trial', 'teachers']
     },
@@ -157,7 +167,7 @@
     },
     {
       id: 'contact',
-      keywords: ['contact', 'phone', 'number', 'whatsapp', 'call', 'email', 'email address', 'support', 'hotline', 'reach you', 'contact us'],
+      keywords: ['contact', 'phone', 'phone number', 'contact number', 'whatsapp number', 'whatsapp', 'call', 'email', 'email address', 'support', 'hotline', 'reach you', 'contact us', 'رابطہ', 'واٹس ایپ'],
       reply: `You can contact <b>${CONFIG.academyName}</b> by email at <a href="mailto:${CONFIG.email}">${CONFIG.email}</a>.<br><br>The Home page lists <b>Call / WhatsApp: ${CONFIG.whatsappDisplay}</b>. The Contact page separately lists a <b>Direct Support Hotline: +92 307 4277240</b>.<br><br>You can also use the <a href="/contact" target="_blank">Contact page</a> to send a message.`,
       quickReplies: ['trial', 'packages']
     },
@@ -169,13 +179,13 @@
     },
     {
       id: 'languages',
-      keywords: ['language', 'languages', 'translate', 'translation', 'urdu', 'arabic language', 'bengali', 'hindi', 'turkish', 'chinese', 'japanese', 'korean', 'spanish', 'french', 'language options'],
+      keywords: ['language', 'languages', 'translate', 'translation', 'urdu language', 'arabic language', 'bengali', 'hindi', 'turkish', 'chinese', 'japanese', 'korean', 'spanish', 'french', 'language options'],
       reply: `The website provides a language selector with <b>11 options</b>: English, Urdu, Arabic, Bengali, Hindi, Turkish, Chinese, Japanese, Korean, Spanish, and French.`,
       quickReplies: ['contact']
     },
     {
       id: 'payment',
-      keywords: ['payment', 'pay', 'how to pay', 'payment method', 'bank transfer', 'easypaisa', 'jazzcash', 'card', 'credit card', 'refund', 'cancel', 'cancellation'],
+      keywords: ['payment', 'pay', 'how to pay', 'payment method', 'bank transfer', 'easypaisa', 'jazzcash', 'credit card', 'refund', 'cancel', 'cancellation'],
       reply: `The public website content does not specify a complete list of payment methods or a detailed cancellation/refund policy.<br><br>For the correct payment information for your country, please contact the academy through the <a href="/contact" target="_blank">Contact page</a> or WhatsApp.`,
       quickReplies: ['contact', 'packages']
     },
@@ -227,9 +237,8 @@
     sitemap: 'Site Map'
   };
 
-  const FALLBACK_REPLY = `I don’t have enough information to answer that accurately yet. Please ask me about <b>${CONFIG.academyName}</b>, our website, courses, classes, fees, trial, registration, or contact details.`;
   const OUT_OF_SCOPE_REPLY = `Sorry, I can only help with <b>${CONFIG.academyName}</b> and this website. Please ask me about our courses, classes, fees, trial, registration, timings, or contact details.`;
-  const AI_ERROR_REPLY = `Sorry, I couldn’t process that right now. Please try again in a moment.`;
+  const TEMP_REPLY = `Our assistant is a little busy right now, so I couldn’t answer that fully. Please try again in a moment, or ask our team directly on <a href="${WHATSAPP_LINK('')}" target="_blank" rel="noopener">WhatsApp</a> or via the <a href="/contact" target="_blank">Contact page</a>.`;
   const FALLBACK_QUICK = ['courses', 'trial', 'packages', 'contact'];
 
   // ==================================================================
@@ -238,7 +247,7 @@
   function normalize(str) {
     return String(str || '')
       .toLowerCase()
-      .replace(/[^\w\s]/g, ' ')
+      .replace(/[^\p{L}\p{M}\p{N}\s]/gu, ' ')   // keeps English + Urdu/Arabic letters
       .replace(/\s+/g, ' ')
       .trim();
   }
@@ -247,90 +256,171 @@
     return KB.find(e => e.id === id) || null;
   }
 
-  function scoreMatch(userText) {
-    const text = ' ' + normalize(userText) + ' ';
-    let best = null;
-    let bestScore = 0;
+  // When two answers match equally well, the more important one wins.
+  const PRIORITY = {
+    packages: 3, trial: 3, contact: 3,
+    register: 2, courses: 2, timings: 2, teachers: 2, pricing_countries: 2, duration: 2,
+    greeting: 0, thanks: 0, bye: 0
+  };
+  const entryPriority = (entry) => (PRIORITY[entry.id] ?? 1);
 
-    KB.forEach(entry => {
+  // Every KB entry that matches, best first.
+  function rankEntries(userText) {
+    const text = ' ' + normalize(userText) + ' ';
+    const ranked = [];
+
+    KB.forEach((entry, index) => {
       let score = 0;
       entry.keywords.forEach(kw => {
         const k = ' ' + normalize(kw) + ' ';
-        if (text.includes(k)) score += kw.split(' ').length;
+        if (k.trim() && text.includes(k)) score += kw.split(' ').length;
       });
-      if (score > bestScore) {
-        bestScore = score;
-        best = entry;
-      }
+      if (score > 0) ranked.push({ entry, score, index });
     });
 
-    return { entry: best, score: bestScore };
+    ranked.sort((a, b) =>
+      b.score - a.score ||
+      entryPriority(b.entry) - entryPriority(a.entry) ||
+      a.index - b.index
+    );
+    return ranked;
   }
 
-  // Use a local answer only when the intent is reasonably obvious.
-  // Ambiguous/natural-language questions are sent to the AI assistant.
-  function findStrongLocalMatch(userText) {
-    const { entry, score } = scoreMatch(userText);
-    if (!entry) return null;
+  // Local-first routing.
+  // Returns { local: entry|null }.  local === null  ->  ask the AI.
+  const MAX_LOCAL_WORDS = 7;
 
+  function decideRoute(userText) {
     const normalized = normalize(userText);
-    const exactKeyword = entry.keywords.some(kw => normalized === normalize(kw));
-    return exactKeyword || score >= 2 ? entry : null;
+    const words = normalized ? normalized.split(' ').length : 0;
+    const ranked = rankEntries(userText);
+    if (!ranked.length) return { local: null };
+
+    const top = ranked[0];
+    const second = ranked[1];
+
+    // 1) The whole message is exactly one of the keywords ("packages", "fees" ...)
+    if (top.entry.keywords.some(kw => normalized === normalize(kw))) {
+      return { local: top.entry };
+    }
+
+    // 2) Short message and one topic clearly wins
+    if (words <= MAX_LOCAL_WORDS) {
+      if (!second || top.score > second.score) return { local: top.entry };
+      if (top.score === second.score &&
+          entryPriority(top.entry) > entryPriority(second.entry)) {
+        return { local: top.entry };
+      }
+    }
+
+    // 3) Long / multi-topic / unclear -> AI
+    return { local: null };
   }
+
+  // Used when the AI route is busy or down: best built-in answer(s).
+  // If two topics match equally (e.g. "trial and fees"), show both.
+  function localFallback(userText) {
+    const ranked = rankEntries(userText);
+    if (!ranked.length) return null;
+
+    const best = ranked[0].score;
+    const picks = ranked
+      .filter(r => r.score === best && r.entry.id !== 'greeting')
+      .slice(0, 2)
+      .map(r => r.entry);
+
+    if (!picks.length) return null;
+    if (picks.length === 1) return picks[0];
+
+    const chips = [];
+    picks.forEach(e => (e.quickReplies || []).forEach(id => {
+      if (!chips.includes(id)) chips.push(id);
+    }));
+
+    return {
+      id: 'combined',
+      reply: picks.map(e => e.reply).join('<br><br>'),
+      quickReplies: chips.slice(0, 4)
+    };
+  }
+
+  function stripHtml(html) {
+    return String(html || '')
+      .replace(/<br\s*\/?>/gi, ' ')
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/&nbsp;/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  // Facts that are always useful for the AI, plus the best matches.
+  const CORE_KNOWLEDGE_IDS = [
+    'packages', 'pricing_countries', 'courses', 'trial', 'register',
+    'contact', 'timings', 'teachers', 'duration', 'about_academy'
+  ];
 
   function websiteKnowledgeForAI(userText) {
-    const { entry: bestEntry } = scoreMatch(userText);
-    const normalized = normalize(userText);
+    const ids = [];
+    rankEntries(userText).slice(0, 4).forEach(r => ids.push(r.entry.id));
+    CORE_KNOWLEDGE_IDS.forEach(id => { if (!ids.includes(id)) ids.push(id); });
 
-    // Send only the most relevant site entries to reduce API usage while
-    // keeping enough context for natural multi-part customer questions.
-    const scored = KB.map(entry => {
-      let score = 0;
-      entry.keywords.forEach(kw => {
-        const k = normalize(kw);
-        if (normalized.includes(k)) score += k.split(' ').length + 1;
-      });
-      if (entry === bestEntry) score += 2;
-      return { entry, score };
-    })
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 6);
-
-    return scored.map(({ entry }) => ({
-      id: entry.id,
-      answer: entry.reply.replace(/<[^>]*>/g, ' ').replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim()
-    }));
+    return ids
+      .slice(0, 12)
+      .map(id => findById(id))
+      .filter(Boolean)
+      .map(entry => ({ id: entry.id, answer: stripHtml(entry.reply) }));
   }
 
+  // Must be called BEFORE the new user message is pushed to `history`,
+  // so the current question is not sent twice.
   function getRecentHistoryForAI() {
-    return history
+    const items = history
       .slice(-8)
       .map(msg => ({
         role: msg.who === 'user' ? 'user' : 'assistant',
-        content: String(msg.html || '').replace(/<[^>]*>/g, ' ').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim()
-      }));
+        content: stripHtml(msg.html)
+      }))
+      .filter(m => m.content);
+
+    // The conversation must start with a user turn (drop the greeting)
+    while (items.length && items[0].role !== 'user') items.shift();
+    return items;
   }
 
-  async function askAi(question) {
-    const response = await fetch(CONFIG.aiEndpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        question,
-        history: getRecentHistoryForAI(),
-        websiteKnowledge: websiteKnowledgeForAI(question)
-      })
-    });
+  async function askAi(question, aiHistory) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), CONFIG.aiTimeoutMs);
 
-    if (!response.ok) {
-      throw new Error(`AI request failed: ${response.status}`);
+    try {
+      const response = await fetch(CONFIG.aiEndpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          question,
+          history: aiHistory,
+          websiteKnowledge: websiteKnowledgeForAI(question)
+        }),
+        signal: controller.signal
+      });
+
+      if (!response.ok) {
+        throw new Error(`AI request failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const scope = ['in_scope', 'out_of_scope', 'temporary'].includes(data.scope)
+        ? data.scope
+        : 'temporary';
+
+      return { scope, answer: String(data.answer || '').trim() };
+    } finally {
+      clearTimeout(timer);
     }
-
-    const data = await response.json();
-    return {
-      scope: data.scope === 'in_scope' ? 'in_scope' : 'out_of_scope',
-      answer: String(data.answer || '').trim()
-    };
   }
 
   function textToHtml(text) {
@@ -646,17 +736,30 @@
     respondWith(entry);
   }
 
+  // AI is busy/down: show the best built-in answer instead of an error.
+  function respondFromFallback(userText) {
+    const local = localFallback(userText);
+    if (local) {
+      pushBot(local);
+    } else {
+      pushBot({ reply: TEMP_REPLY, quickReplies: FALLBACK_QUICK });
+    }
+  }
+
   async function handleUserText(text) {
     const trimmed = text.trim();
     if (!trimmed) return;
 
+    // Read history first so the current question is not included twice.
+    const aiHistory = getRecentHistoryForAI();
+
     pushUser(trimmed);
     els.input.value = '';
 
-    // Fast path: clear FAQ intents don't need an API call.
-    const localMatch = findStrongLocalMatch(trimmed);
-    if (localMatch) {
-      respondWith(localMatch);
+    // Fast path: clear FAQ intents are answered instantly, no API call.
+    const route = decideRoute(trimmed);
+    if (route.local) {
+      respondWith(route.local);
       return;
     }
 
@@ -665,20 +768,21 @@
     showTyping();
 
     try {
-      const result = await askAi(trimmed);
+      const result = await askAi(trimmed, aiHistory);
       removeTyping();
 
-      if (result.scope !== 'in_scope') {
-        pushBot({ reply: OUT_OF_SCOPE_REPLY, quickReplies: FALLBACK_QUICK });
-      } else if (result.answer) {
+      if (result.scope === 'in_scope' && result.answer) {
         pushBotText(result.answer, ['courses', 'trial', 'packages', 'contact']);
+      } else if (result.scope === 'out_of_scope') {
+        pushBot({ reply: OUT_OF_SCOPE_REPLY, quickReplies: FALLBACK_QUICK });
       } else {
-        pushBot({ reply: FALLBACK_REPLY, quickReplies: FALLBACK_QUICK });
+        // 'temporary' (timeout / busy / model error) or empty answer
+        respondFromFallback(trimmed);
       }
     } catch (error) {
       console.error('[Al Fatima Chatbot] AI error:', error);
       removeTyping();
-      pushBot({ reply: AI_ERROR_REPLY, quickReplies: FALLBACK_QUICK });
+      respondFromFallback(trimmed);
     } finally {
       els.input.disabled = false;
       els.send.disabled = false;
