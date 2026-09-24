@@ -13,7 +13,7 @@
                 </div>
             </div>
 
-            <!-- Navigation Links (Desktop) -->
+            <!-- Navigation Links (Desktop only) -->
             <nav class="hidden md:flex items-center space-x-8 text-sm font-semibold tracking-wide">
                 <a href="/" data-nav="/" class="nav-link hover:text-gold-500 transition-colors">Home</a>
                 <a href="/about" data-nav="/about" class="nav-link hover:text-gold-500 transition-colors">About Us</a>
@@ -59,16 +59,89 @@
                 <a href="/contact" data-nav="/contact" class="nav-link hover:text-gold-500 transition-colors">Contact</a>
             </nav>
 
-            <!-- Phone & Language Dropdown -->
-            <div class="flex items-center space-x-4">
+            <!-- Right Side: Phone (desktop) + Hamburger (mobile) -->
+            <div class="flex items-center space-x-3">
+                <!-- Phone number (desktop only) -->
                 <a href="tel:+923075329240"
                     class="hidden lg:flex items-center space-x-2 text-xs font-bold border border-gold-500/30 px-3 py-1.5 rounded-full bg-gold-500/5 hover:bg-gold-500/20 transition-all text-gold-400">
                     <i class="fa-solid fa-phone"></i>
                     <span>+923075329240</span>
                 </a>
-                <!-- Hidden Google Translate Element Container -->
-                <!-- Customized Language Dropdown -->
+
+                <!-- Hamburger Button (mobile only) -->
+                <button id="mobileMenuBtn" onclick="toggleMobileMenu()"
+                    class="md:hidden flex items-center justify-center w-10 h-10 rounded-xl border border-gold-500/30 bg-gold-500/10 text-gold-400 hover:bg-gold-500/20 transition-all focus:outline-none"
+                    aria-label="Open Menu">
+                    <i id="mobileMenuIcon" class="fa-solid fa-bars text-lg"></i>
+                </button>
             </div>
         </div>
+    </div>
+
+    <!-- Mobile Dropdown Menu (hidden by default) -->
+    <div id="mobileMenu"
+        class="hidden md:hidden bg-neutral-950/98 backdrop-blur-md border-t border-gold-500/15 px-4 pb-4">
+        <ul class="space-y-1 pt-3 text-sm font-semibold">
+            <li>
+                <a href="/" data-mobile-nav="/" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gold-500/10 hover:text-gold-400 transition-all text-gray-300">
+                    <i class="fa-solid fa-house text-gold-500 w-4"></i> Home
+                </a>
+            </li>
+            <li>
+                <a href="/about" data-mobile-nav="/about" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gold-500/10 hover:text-gold-400 transition-all text-gray-300">
+                    <i class="fa-solid fa-circle-info text-gold-500 w-4"></i> About Us
+                </a>
+            </li>
+            <!-- Services accordion -->
+            <li>
+                <button onclick="toggleMobileServices()"
+                    class="w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl hover:bg-gold-500/10 hover:text-gold-400 transition-all text-gray-300">
+                    <span class="flex items-center gap-3">
+                        <i class="fa-solid fa-layer-group text-gold-500 w-4"></i> Services
+                    </span>
+                    <i id="mobileServicesChevron" class="fa-solid fa-chevron-down text-xs text-gray-400 transition-transform duration-200"></i>
+                </button>
+                <ul id="mobileServicesList" class="hidden pl-7 mt-1 space-y-1 border-l border-gold-500/20 ml-4">
+                    <li><a href="/services#noorani-qaida" onclick="sessionStorage.setItem('openService','noorani-qaida'); closeMobileMenu();"
+                        class="flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-gray-400 hover:text-gold-400 hover:bg-gold-500/10 transition-all">
+                        <i class="fa-solid fa-book-open text-gold-500/70 w-3"></i> Noorani Qaida
+                    </a></li>
+                    <li><a href="/services#tajweed-quran" onclick="sessionStorage.setItem('openService','tajweed-quran'); closeMobileMenu();"
+                        class="flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-gray-400 hover:text-gold-400 hover:bg-gold-500/10 transition-all">
+                        <i class="fa-solid fa-microphone text-gold-500/70 w-3"></i> Tajweed-ul-Quran
+                    </a></li>
+                    <li><a href="/services#hifz-quran" onclick="sessionStorage.setItem('openService','hifz-quran'); closeMobileMenu();"
+                        class="flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-gray-400 hover:text-gold-400 hover:bg-gold-500/10 transition-all">
+                        <i class="fa-solid fa-heart text-gold-500/70 w-3"></i> Hifz Quran
+                    </a></li>
+                    <li><a href="/services#islamic-duas" onclick="sessionStorage.setItem('openService','islamic-duas'); closeMobileMenu();"
+                        class="flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-gray-400 hover:text-gold-400 hover:bg-gold-500/10 transition-all">
+                        <i class="fa-solid fa-star text-gold-500/70 w-3"></i> Islamic Duas
+                    </a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="/packages" data-mobile-nav="/packages" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gold-500/10 hover:text-gold-400 transition-all text-gray-300">
+                    <i class="fa-solid fa-tags text-gold-500 w-4"></i> Packages
+                </a>
+            </li>
+            <li>
+                <a href="/quran" data-mobile-nav="/quran" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gold-500/10 hover:text-gold-400 transition-all text-gray-300">
+                    <i class="fa-solid fa-book-quran text-gold-500 w-4"></i> Read Quran
+                </a>
+            </li>
+            <li>
+                <a href="/contact" data-mobile-nav="/contact" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gold-500/10 hover:text-gold-400 transition-all text-gray-300">
+                    <i class="fa-solid fa-envelope text-gold-500 w-4"></i> Contact
+                </a>
+            </li>
+            <!-- Phone (mobile) -->
+            <li class="pt-1 border-t border-gold-500/10 mt-2">
+                <a href="tel:+923075329240"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-400 transition-all font-bold">
+                    <i class="fa-solid fa-phone w-4"></i> +923075329240
+                </a>
+            </li>
+        </ul>
     </div>
 </header>

@@ -81,6 +81,22 @@
         body {
             top: 0px !important;
         }
+    
+        /* Custom Scrollbar for Language Popup */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.4);
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(212, 175, 55, 0.8);
+        }
     </style>
 
     <script>
@@ -227,69 +243,59 @@
     <!-- Google Translate Hidden Container -->
     <div id="google_translate_element" style="display:none !important; visibility:hidden !important;"></div>
 
-    <!-- Floating Language Translator Button (Right Side) -->
-    <div class="fixed bottom-24 right-6 z-50">
+        <!-- Floating Language Translator Button (Right Side) -->
+    <div class="fixed bottom-6 left-6 z-50">
         <!-- Floating Main Button -->
         <button id="floatingLangBtn" onclick="toggleLangPopup()"
-            class="bg-gold-500 hover:bg-gold-600 text-slate-950 p-4 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 transform hover:scale-110 focus:outline-none border-2 border-slate-900"
+            class="bg-gradient-to-r from-gold-400 to-gold-600 hover:from-gold-300 hover:to-gold-500 text-slate-950 p-3 md:p-4 rounded-full shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:shadow-[0_0_30px_rgba(212,175,55,0.6)] flex items-center justify-center transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 focus:outline-none border-2 border-slate-900"
             title="Select Language">
-            <i class="fa-solid fa-language text-2xl"></i>
+            <i class="fa-solid fa-language text-xl md:text-2xl"></i>
         </button>
 
         <!-- Language Selection Popup -->
         <div id="langPopup"
-            class="hidden absolute bottom-16 right-0 w-64 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-4 text-slate-100 backdrop-blur-md bg-opacity-95 transition-all duration-300">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
-                <h3 class="font-bold text-gold-400 text-sm tracking-wide uppercase"><i
-                        class="fa-solid fa-globe mr-1"></i> Select Language</h3>
-                <span class="text-xs text-slate-400">11 Options</span>
+            class="hidden absolute bottom-16 md:bottom-20 left-0 w-64 md:w-72 bg-neutral-950/90 border border-gold-500/20 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] p-4 text-slate-100 backdrop-blur-xl transition-all duration-300">
+            <div class="flex items-center justify-between border-b border-gold-500/20 pb-3 mb-3">
+                <h3 class="font-bold text-gold-400 text-xs md:text-sm tracking-wide uppercase flex items-center">
+                    <i class="fa-solid fa-globe mr-2"></i> Select Language
+                </h3>
+                <span class="text-[10px] md:text-xs text-gray-400 font-medium px-2 py-0.5 bg-neutral-800 rounded-full">11 Options</span>
             </div>
 
             <!-- Languages List -->
-            <div class="space-y-1 text-sm max-h-72 overflow-y-auto pr-1">
-                <button onclick="changeLanguage('en')"
-                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
-                    <span class="mr-3 text-base">🇬🇧 / 🇨🇦</span> English (UK / Canada)
+            <div class="space-y-1 text-sm max-h-72 overflow-y-auto pr-2 custom-scrollbar">
+                <button onclick="changeLanguage('en')" class="w-full text-left flex items-center p-2 rounded-xl hover:bg-gold-500/10 hover:text-gold-400 transition-all duration-200">
+                    <span class="mr-3 text-base">🇬🇧</span> <span class="font-medium text-xs md:text-sm">English</span>
                 </button>
-                <button onclick="changeLanguage('ur')"
-                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
-                    <span class="mr-3 text-base">🇵🇰</span> Urdu (اردو)
+                <button onclick="changeLanguage('ur')" class="w-full text-left flex items-center p-2 rounded-xl hover:bg-gold-500/10 hover:text-gold-400 transition-all duration-200">
+                    <span class="mr-3 text-base">🇵🇰</span> <span class="font-medium text-xs md:text-sm">Urdu (اردو)</span>
                 </button>
-                <button onclick="changeLanguage('ar')"
-                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
-                    <span class="mr-3 text-base">🇸🇦 / 🇾🇪</span> Arabic (العربية / Yemen)
+                <button onclick="changeLanguage('ar')" class="w-full text-left flex items-center p-2 rounded-xl hover:bg-gold-500/10 hover:text-gold-400 transition-all duration-200">
+                    <span class="mr-3 text-base">🇸🇦</span> <span class="font-medium text-xs md:text-sm">Arabic (العربية)</span>
                 </button>
-                <button onclick="changeLanguage('bn')"
-                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
-                    <span class="mr-3 text-base">🇧🇩</span> Bengali (বাংলা)
+                <button onclick="changeLanguage('bn')" class="w-full text-left flex items-center p-2 rounded-xl hover:bg-gold-500/10 hover:text-gold-400 transition-all duration-200">
+                    <span class="mr-3 text-base">🇧🇩</span> <span class="font-medium text-xs md:text-sm">Bengali (বাংলা)</span>
                 </button>
-                <button onclick="changeLanguage('hi')"
-                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
-                    <span class="mr-3 text-base">🇮🇳</span> Hindi (हिन्दी)
+                <button onclick="changeLanguage('hi')" class="w-full text-left flex items-center p-2 rounded-xl hover:bg-gold-500/10 hover:text-gold-400 transition-all duration-200">
+                    <span class="mr-3 text-base">🇮🇳</span> <span class="font-medium text-xs md:text-sm">Hindi (हिन्दी)</span>
                 </button>
-                <button onclick="changeLanguage('tr')"
-                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
-                    <span class="mr-3 text-base">🇹🇷</span> Turkish (Türkçe)
+                <button onclick="changeLanguage('tr')" class="w-full text-left flex items-center p-2 rounded-xl hover:bg-gold-500/10 hover:text-gold-400 transition-all duration-200">
+                    <span class="mr-3 text-base">🇹🇷</span> <span class="font-medium text-xs md:text-sm">Turkish (Türkçe)</span>
                 </button>
-                <button onclick="changeLanguage('zh-CN')"
-                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
-                    <span class="mr-3 text-base">🇨🇳</span> Chinese (中文)
+                <button onclick="changeLanguage('zh-CN')" class="w-full text-left flex items-center p-2 rounded-xl hover:bg-gold-500/10 hover:text-gold-400 transition-all duration-200">
+                    <span class="mr-3 text-base">🇨🇳</span> <span class="font-medium text-xs md:text-sm">Chinese (中文)</span>
                 </button>
-                <button onclick="changeLanguage('ja')"
-                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
-                    <span class="mr-3 text-base">🇯🇵</span> Japanese (日本語)
+                <button onclick="changeLanguage('ja')" class="w-full text-left flex items-center p-2 rounded-xl hover:bg-gold-500/10 hover:text-gold-400 transition-all duration-200">
+                    <span class="mr-3 text-base">🇯🇵</span> <span class="font-medium text-xs md:text-sm">Japanese (日本語)</span>
                 </button>
-                <button onclick="changeLanguage('ko')"
-                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
-                    <span class="mr-3 text-base">🇰🇷</span> Korean (한국어)
+                <button onclick="changeLanguage('ko')" class="w-full text-left flex items-center p-2 rounded-xl hover:bg-gold-500/10 hover:text-gold-400 transition-all duration-200">
+                    <span class="mr-3 text-base">🇰🇷</span> <span class="font-medium text-xs md:text-sm">Korean (한국어)</span>
                 </button>
-                <button onclick="changeLanguage('es')"
-                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
-                    <span class="mr-3 text-base">🇪🇸</span> Spanish (Español)
+                <button onclick="changeLanguage('es')" class="w-full text-left flex items-center p-2 rounded-xl hover:bg-gold-500/10 hover:text-gold-400 transition-all duration-200">
+                    <span class="mr-3 text-base">🇪🇸</span> <span class="font-medium text-xs md:text-sm">Spanish (Español)</span>
                 </button>
-                <button onclick="changeLanguage('fr')"
-                    class="w-full text-left flex items-center p-2 rounded-xl hover:bg-slate-800 hover:text-gold-400 transition-colors">
-                    <span class="mr-3 text-base">🇫🇷</span> French (Français)
+                <button onclick="changeLanguage('fr')" class="w-full text-left flex items-center p-2 rounded-xl hover:bg-gold-500/10 hover:text-gold-400 transition-all duration-200">
+                    <span class="mr-3 text-base">🇫🇷</span> <span class="font-medium text-xs md:text-sm">French (Français)</span>
                 </button>
             </div>
         </div>
@@ -346,24 +352,6 @@
         });
     </script>
     </div>
-
-    <!-- Floating Navigation Button -->
-    <div class="fixed bottom-6 left-6 z-50">
-        <!-- Floating Button -->
-        <button id="floatingNavBtn" onclick="toggleNavPopup()"
-            class="bg-gold-500 hover:bg-gold-600 text-slate-950 p-4 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 transform hover:scale-110 focus:outline-none border-2 border-slate-900"
-            title="Quick Menu">
-            <i id="navIcon" class="fa-solid fa-bars text-xl"></i>
-        </button>
-
-        <!-- Popup Menu -->
-        <div id="navPopup"
-            class="hidden absolute bottom-16 left-0 w-60 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-4 text-slate-100 backdrop-blur-md bg-opacity-95 transition-all duration-300">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
-                <h3 class="font-bold text-gold-400 text-sm tracking-wide uppercase">Quick Menu</h3>
-                <span class="text-xs text-slate-400">Pages</span>
-            </div>
-
             <!-- Exact Pages Links -->
             <ul class="space-y-1 text-sm">
                 <li>
@@ -442,31 +430,6 @@
         </div>
     </div>
 
-    <!-- Toggle Logic Script -->
-    <script>
-        function toggleNavPopup() {
-            const popup = document.getElementById('navPopup');
-            const icon = document.getElementById('navIcon');
-
-            popup.classList.toggle('hidden');
-
-            if (popup.classList.contains('hidden')) {
-                icon.className = 'fa-solid fa-bars text-xl';
-            } else {
-                icon.className = 'fa-solid fa-xmark text-xl';
-            }
-        }
-
-        document.addEventListener('click', function (event) {
-            const popup = document.getElementById('navPopup');
-            const btn = document.getElementById('floatingNavBtn');
-
-            if (popup && btn && !popup.contains(event.target) && !btn.contains(event.target)) {
-                popup.classList.add('hidden');
-                document.getElementById('navIcon').className = 'fa-solid fa-bars text-xl';
-            }
-        });
-    </script>
 
     <!-- ================= MULTI-FUNCTIONAL CORE SCRIPTS ================= -->
     <script type='text/javascript'>
