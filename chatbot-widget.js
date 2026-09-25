@@ -432,13 +432,18 @@
   // ==================================================================
   const CSS = `
   .afa-cb-launcher {
-    position: fixed; right: 22px; bottom: 22px; z-index: 99998;
-    width: 56px; height: 56px; border-radius: 16px; border: 1px solid rgba(212,175,55,.55);
-    background: #171717; color: #e5c060; font-size: 20px; display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 10px 28px rgba(0,0,0,.28); cursor: pointer;
-    transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
+    position: fixed; right: 24px; bottom: 24px; z-index: 99998;
+    width: 56px; height: 56px; border-radius: 50%; border: 2px solid #0f172a;
+    background: linear-gradient(to right, #e5c060, #bca02d); color: #0f172a; font-size: 24px; 
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 20px rgba(212,175,55,0.4); cursor: pointer;
+    transition: all 0.3s ease;
   }
-  .afa-cb-launcher:hover { transform: translateY(-2px); background: #1d1d1d; box-shadow: 0 12px 30px rgba(0,0,0,.34); }
+  .afa-cb-launcher:hover { 
+    transform: translateY(-4px) scale(1.05); 
+    background: linear-gradient(to right, #f2d472, #D4AF37); 
+    box-shadow: 0 0 30px rgba(212,175,55,0.6); 
+  }
   .afa-cb-launcher .afa-cb-dot {
     position: absolute; top: -3px; right: -3px; width: 11px; height: 11px; border-radius: 50%;
     background: #30c46b; border: 2px solid #0d0d0d; display: none;
@@ -541,8 +546,8 @@
   .afa-cb-send:disabled { opacity: .5; cursor: default; transform: none; }
 
   @media (max-width: 480px) {
-    .afa-cb-panel { right: 12px; left: 12px; width: auto; bottom: 78px; height: 72vh; }
-    .afa-cb-launcher { right: 14px; bottom: 14px; }
+    .afa-cb-panel { right: 12px; left: 12px; width: auto; bottom: 86px; height: 72vh; }
+    .afa-cb-launcher { right: 24px; bottom: 24px; width: 48px; height: 48px; font-size: 20px; }
   }
   `;
 
