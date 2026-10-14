@@ -5,7 +5,6 @@ import NooraniQaidaPanel from '../components/services/NooraniQaidaPanel';
 import TajweedPanel from '../components/services/TajweedPanel';
 import HifzPanel from '../components/services/HifzPanel';
 import IslamicDuasPanel from '../components/services/IslamicDuasPanel';
-import RegistrationForm from '../components/services/RegistrationForm';
 
 const SERVICES = [
   {
@@ -221,15 +220,13 @@ export default function Services() {
                   </div>
                 </div>
 
-                <a
-                  href={`https://wa.me/923075329240?text=${encodeURIComponent(`Assalamu Alaikum! I'd like to learn more about the ${currentService.title} course.`)}`}
-                  target="_blank"
-                  rel="noreferrer"
+                <Link
+                  to="/contact"
                   className="glow-pulse mt-2 flex items-center justify-center gap-2 w-full bg-gold-500 hover:bg-gold-400 text-neutral-950 font-bold py-2.5 px-4 rounded-xl text-sm transition-all duration-300 hover:scale-[1.02]"
                 >
-                  <i className="fa-brands fa-whatsapp text-base" />
+                  <i className="fa-solid fa-paper-plane text-sm" />
                   Start Free 3-Day Trial
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -315,11 +312,6 @@ export default function Services() {
             </div>
           </main>
         </div>
-      </div>
-
-      {/* ─────────── REGISTRATION FORM ─────────── */}
-      <div className="border-t border-gold-500/10 mt-4">
-        <RegistrationForm />
       </div>
     </div>
   );

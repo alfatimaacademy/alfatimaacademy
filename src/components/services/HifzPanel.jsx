@@ -1,8 +1,4 @@
-import { WHATSAPP_NUMBER } from '../../data/site';
-
-const WA_MSG = encodeURIComponent(
-  'Assalamu Alaikum! I am interested in the Online Quran Memorization (Hifz) Free Trial Class.'
-);
+import { Link } from 'react-router-dom';
 
 const TIER_SYSTEM = [
   {
@@ -259,15 +255,13 @@ export default function HifzPanel() {
             Let our senior Hafiz evaluate your retention, provide a personalized pacing blueprint, and show you how effortless memorization can feel from home.
           </p>
           <div className="pt-2">
-            <a
-              href={`https://wa.me/${WHATSAPP_NUMBER}?text=${WA_MSG}`}
-              target="_blank"
-              rel="noreferrer"
+            <Link
+              to="/contact"
               className="glow-pulse inline-flex items-center gap-2.5 bg-gold-500 hover:bg-gold-400 text-neutral-950 font-bold py-3.5 px-8 rounded-xl text-sm tracking-wide transition-all duration-300 hover:scale-[1.03] shadow-xl shadow-gold-500/20"
             >
-              <i className="fa-brands fa-whatsapp text-lg" />
-              Enroll in Hifz via WhatsApp
-            </a>
+              <i className="fa-solid fa-paper-plane text-sm" />
+              Enroll in Hifz Now
+            </Link>
           </div>
         </div>
       </div>

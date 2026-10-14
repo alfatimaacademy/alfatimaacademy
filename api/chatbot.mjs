@@ -30,10 +30,8 @@
 // NOTE: Gemini 2.5 models are scheduled for shutdown in Oct 2026,
 // so they are intentionally NOT part of the default chain.
 const DEFAULT_MODELS = [
-  'gemini-3.1-flash-lite',
-  'gemini-3.5-flash-lite',
-  'gemini-3.5-flash',
-  'gemini-3.6-flash'
+  'gemini-3.8-flash-lite',
+  'gemini-3.8-flash'
 ];
 
 const MODEL_CHAIN = [

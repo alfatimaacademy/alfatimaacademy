@@ -2,5 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /api/
 
-# TODO: replace YOUR-DOMAIN.com with your real domain (same one you use on Vercel)
-Sitemap: https://YOUR-DOMAIN.com/sitemap.xml
+Sitemap: https://www.alfatimaacademy.com/sitemap.xml

@@ -1,8 +1,4 @@
-import { WHATSAPP_NUMBER } from '../../data/site';
-
-const WA_MSG = encodeURIComponent(
-  'Assalamu Alaikum! I would like to register for the Noorani Qaida 3-Day Free Trial Class.'
-);
+import { Link } from 'react-router-dom';
 
 const CURRICULUM = [
   {
@@ -231,18 +227,16 @@ export default function NooraniQaidaPanel() {
             Begin Your 3-Day Free Trial Today
           </h3>
           <p className="text-gray-400 text-sm max-w-lg mx-auto leading-relaxed">
-            Experience our interactive Noorani Qaida classes first-hand. Connect with our coordinators on WhatsApp to pick your preferred schedule and teacher.
+            Experience our interactive Noorani Qaida classes first-hand. Contact our coordinators to pick your preferred schedule and teacher.
           </p>
           <div className="pt-2">
-            <a
-              href={`https://wa.me/${WHATSAPP_NUMBER}?text=${WA_MSG}`}
-              target="_blank"
-              rel="noreferrer"
+            <Link
+              to="/contact"
               className="glow-pulse inline-flex items-center gap-2.5 bg-gold-500 hover:bg-gold-400 text-neutral-950 font-bold py-3.5 px-8 rounded-xl text-sm tracking-wide transition-all duration-300 hover:scale-[1.03] shadow-xl shadow-gold-500/20"
             >
-              <i className="fa-brands fa-whatsapp text-lg" />
-              Enroll via WhatsApp Now
-            </a>
+              <i className="fa-solid fa-paper-plane text-sm" />
+              Enroll Now
+            </Link>
           </div>
         </div>
       </div>
