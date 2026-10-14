@@ -1,8 +1,8 @@
 # Al Fatima AI Chatbot — Setup
 
 FILES
-1. chatbot-widget.js   -> project root (auto-loaded on every page by components-loader.js)
-2. api/chatbot.mjs     -> Vercel serverless function (Gemini)
+1. public/chatbot-widget.js -> loaded once for the whole site by src/components/ChatbotLoader.jsx
+2. api/chatbot.mjs            -> Vercel serverless function (Gemini). Stays in the project ROOT (not in src or public).
 
 VERCEL ENVIRONMENT VARIABLES
 - GEMINI_API_KEY   (required)  Your Google AI Studio / Gemini API key.
@@ -33,3 +33,7 @@ TROUBLESHOOTING
                                and whether it timed out.
 - If facts on the website change (fees, phone numbers, plans) update the KB in
   chatbot-widget.js too.
+
+LOCAL DEV NOTE
+`npm run dev` (Vite) does not run /api. Use `npx vercel dev` to test the AI route locally;
+with plain `npm run dev` the widget just answers from its built-in knowledge base.

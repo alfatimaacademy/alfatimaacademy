@@ -1,12 +1,7 @@
-# Executables
-tailwindcss.exe
-
-# Temporary files
-script9.txt
-replace_cdn.py
-
-# Editor directories
-.vscode/
-
-# Ignore Mac system files if ever on a Mac
+node_modules
+dist
+.env
+.env.local
+.vercel
+*.log
 .DS_Store
