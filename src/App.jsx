@@ -6,6 +6,8 @@ import Services from './pages/Services';
 import Packages from './pages/Packages';
 import Quran from './pages/Quran';
 import Contact from './pages/Contact';
+import Blog from './pages/Blog';
+import BlogPost from './pages/BlogPost';
 import NotFound from './pages/NotFound';
 
 export default function App() {
@@ -17,6 +19,8 @@ export default function App() {
         <Route path="/services" element={<Services />} />
         <Route path="/packages" element={<Packages />} />
         <Route path="/quran" element={<Quran />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="*" element={<NotFound />} />
       </Route>

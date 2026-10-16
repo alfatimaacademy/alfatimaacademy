@@ -55,12 +55,7 @@ const SERVICES = [
 
 const DEFAULT_SERVICE = 'noorani-qaida';
 
-const BADGE_COLORS = {
-  Beginner: 'bg-emerald-900/60 text-emerald-400 border-emerald-500/30',
-  Intermediate: 'bg-blue-900/60 text-blue-400 border-blue-500/30',
-  Advanced: 'bg-purple-900/60 text-purple-400 border-purple-500/30',
-  'All Levels': 'bg-amber-900/60 text-amber-400 border-amber-500/30',
-};
+
 
 export default function Services() {
   const { hash } = useLocation();
@@ -127,190 +122,40 @@ export default function Services() {
         </div>
       </div>
 
-      {/* ─────────── MAIN TWO-COLUMN LAYOUT ─────────── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 lg:py-14 w-full">
-        <div className="flex flex-col lg:flex-row gap-8 xl:gap-12 items-stretch lg:items-start w-full">
+      {/* ─────────── MAIN CONTENT CONTAINER ─────────── */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 w-full">
+        {/* Course Switcher Tabs */}
+        <div className="flex items-center justify-center gap-2 sm:gap-3 flex-wrap mb-8 sm:mb-12">
+          {SERVICES.map((s) => {
+            const isActive = s.id === activeId;
+            return (
+              <Link
+                key={s.id}
+                to={`/services#${s.id}`}
+                className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300 ${
+                  isActive
+                    ? 'bg-gold-500 text-neutral-950 shadow-lg shadow-gold-500/20 scale-[1.02]'
+                    : 'bg-neutral-900 text-gray-300 border border-gold-500/15 hover:border-gold-500/40 hover:text-white'
+                }`}
+              >
+                <i className={`fa-solid ${s.icon} text-xs ${isActive ? 'text-neutral-950' : 'text-gold-400'}`} />
+                <span>{s.title}</span>
+              </Link>
+            );
+          })}
+        </div>
 
-          {/* ══════════ LEFT SIDEBAR (Desktop only) ══════════ */}
-          <aside className="hidden lg:block lg:w-80 xl:w-88 shrink-0 lg:sticky lg:top-24">
-            {/* Course Navigation Cards */}
-            <div className="rounded-2xl overflow-hidden border border-gold-500/15 bg-neutral-900/60 backdrop-blur-sm shadow-2xl">
-              <div className="px-5 py-4 border-b border-gold-500/10">
-                <p className="text-xs font-bold uppercase tracking-widest text-gray-500">Select a Course</p>
-              </div>
-
-              <nav className="p-3 space-y-2">
-                {SERVICES.map((s) => {
-                  const isActive = s.id === activeId;
-                  return (
-                    <Link
-                      key={s.id}
-                      to={`/services#${s.id}`}
-                      className={`group flex items-center gap-4 p-3.5 rounded-xl transition-all duration-300 relative overflow-hidden ${
-                        isActive
-                          ? 'bg-gradient-to-r from-gold-500/20 to-gold-500/5 border border-gold-500/40 shadow-lg shadow-gold-500/10'
-                          : 'hover:bg-neutral-800/70 border border-transparent hover:border-gold-500/10'
-                      }`}
-                    >
-                      {/* Active left accent bar */}
-                      {isActive && (
-                        <span className="absolute left-0 inset-y-0 w-0.5 bg-gold-400 rounded-r-full" />
-                      )}
-
-                      {/* Course icon avatar */}
-                      <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 ${
-                        isActive
-                          ? 'bg-gold-500 shadow-lg shadow-gold-500/30'
-                          : 'bg-neutral-800 group-hover:bg-neutral-700'
-                      }`}>
-                        <i className={`fa-solid ${s.icon} text-base ${isActive ? 'text-neutral-950' : 'text-gold-400'}`} />
-                      </div>
-
-                      {/* Course info */}
-                      <div className="flex-1 min-w-0">
-                        <p className={`font-semibold text-sm leading-tight truncate ${isActive ? 'text-gold-400' : 'text-gray-200 group-hover:text-white'}`}>
-                          {s.title}
-                        </p>
-                        <p className="text-gray-500 text-xs mt-0.5 truncate">{s.subtitle}</p>
-                      </div>
-
-                      {/* Arrow */}
-                      <i className={`fa-solid fa-chevron-right text-xs transition-all duration-300 ${
-                        isActive ? 'text-gold-400 translate-x-0' : 'text-gray-600 -translate-x-1 group-hover:translate-x-0 group-hover:text-gray-400'
-                      }`} />
-                    </Link>
-                  );
-                })}
-              </nav>
+        {/* Panel Content — only active panel shown */}
+        <div key={panelKey} className="fade-in-up w-full">
+          {SERVICES.map(({ id, Panel }) => (
+            <div
+              key={id}
+              id={`panel-${id}`}
+              className={`w-full ${id === activeId ? 'block' : 'hidden'}`}
+            >
+              <Panel />
             </div>
-
-            {/* Quick Info Card */}
-            <div className="mt-4 rounded-2xl border border-gold-500/15 bg-neutral-900/60 backdrop-blur-sm overflow-hidden">
-              <div className="relative h-32 overflow-hidden">
-                <img
-                  src={currentService.img}
-                  alt={currentService.title}
-                  className="w-full h-full object-cover opacity-40 scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-neutral-900/70 to-transparent" />
-                <div className="absolute bottom-3 left-4 right-4">
-                  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${BADGE_COLORS[currentService.badge]}`}>
-                    {currentService.badge}
-                  </span>
-                </div>
-              </div>
-              <div className="p-4 space-y-3">
-                <h3 className="font-serif font-bold text-white text-base leading-tight">{currentService.title}</h3>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-xs text-gray-400">
-                    <i className="fa-solid fa-clock text-gold-500 w-4" />
-                    <span>Duration: <strong className="text-gray-200">{currentService.duration}</strong></span>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-gray-400">
-                    <i className="fa-solid fa-user-check text-gold-500 w-4" />
-                    <span>1-on-1 Live Classes</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-gray-400">
-                    <i className="fa-solid fa-globe text-gold-500 w-4" />
-                    <span>Available Worldwide</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-gray-400">
-                    <i className="fa-solid fa-venus-mars text-gold-500 w-4" />
-                    <span>Male &amp; Female Tutors</span>
-                  </div>
-                </div>
-
-                <Link
-                  to="/contact"
-                  className="glow-pulse mt-2 flex items-center justify-center gap-2 w-full bg-gold-500 hover:bg-gold-400 text-neutral-950 font-bold py-2.5 px-4 rounded-xl text-sm transition-all duration-300 hover:scale-[1.02]"
-                >
-                  <i className="fa-solid fa-paper-plane text-sm" />
-                  Start Free 3-Day Trial
-                </Link>
-              </div>
-            </div>
-
-            {/* Trust Badges */}
-            <div className="mt-4 rounded-2xl border border-gold-500/10 bg-neutral-900/40 p-4">
-              <p className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-3">Why Al Fatima Academy?</p>
-              <div className="space-y-2.5">
-                {[
-                  { icon: 'fa-shield-halved', text: 'Certified Quran Scholars with Sanad' },
-                  { icon: 'fa-star', text: '5-Star Rated by 200+ Families' },
-                  { icon: 'fa-lock', text: 'Safe, Secure & Private Sessions' },
-                  { icon: 'fa-rotate', text: 'Free Reschedule Anytime' },
-                ].map((item) => (
-                  <div key={item.text} className="flex items-center gap-2.5 text-xs text-gray-400">
-                    <div className="w-6 h-6 rounded-lg bg-gold-500/10 flex items-center justify-center shrink-0">
-                      <i className={`fa-solid ${item.icon} text-gold-500 text-[11px]`} />
-                    </div>
-                    <span>{item.text}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </aside>
-
-          {/* ══════════ RIGHT CONTENT PANEL ══════════ */}
-          <main className="w-full flex-1 min-w-0">
-            {/* Mobile course switcher (sticky below header on small screens) */}
-            <div className="lg:hidden sticky top-20 z-20 bg-neutral-950/95 backdrop-blur-md py-2.5 border-b border-gold-500/15 w-full overflow-x-auto no-scrollbar mb-6">
-              <div className="flex gap-2 pb-0.5">
-                {SERVICES.map((s) => {
-                  const isActive = s.id === activeId;
-                  return (
-                    <Link
-                      key={s.id}
-                      to={`/services#${s.id}`}
-                      className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-300 ${
-                        isActive
-                          ? 'bg-gold-500 text-neutral-950 shadow-lg shadow-gold-500/20'
-                          : 'bg-neutral-900 text-gray-300 border border-gold-500/10 hover:border-gold-500/30'
-                      }`}
-                    >
-                      <i className={`fa-solid ${s.icon} text-[11px]`} />
-                      {s.title}
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Panel Content — only active panel shown */}
-            <div key={panelKey} className="fade-in-up w-full">
-              {SERVICES.map(({ id, Panel }) => (
-                <div
-                  key={id}
-                  id={`panel-${id}`}
-                  className={`w-full ${id === activeId ? 'block' : 'hidden'}`}
-                >
-                  <Panel />
-                </div>
-              ))}
-            </div>
-
-            {/* Mobile Trust Badges & Guarantee (shown on small screens below panel) */}
-            <div className="lg:hidden mt-8 rounded-2xl border border-gold-500/15 bg-neutral-900/40 p-5">
-              <p className="text-xs font-bold uppercase tracking-widest text-gold-400 mb-3 text-center">
-                Why Study at Al Fatima Academy?
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {[
-                  { icon: 'fa-shield-halved', text: 'Certified Quran Scholars with Sanad' },
-                  { icon: 'fa-star', text: '5-Star Rated by 200+ Families' },
-                  { icon: 'fa-lock', text: 'Safe, Secure & Private Sessions' },
-                  { icon: 'fa-rotate', text: 'Free Reschedule Anytime' },
-                ].map((item) => (
-                  <div key={item.text} className="flex items-center gap-2.5 text-xs text-gray-300">
-                    <div className="w-6 h-6 rounded-lg bg-gold-500/10 flex items-center justify-center shrink-0">
-                      <i className={`fa-solid ${item.icon} text-gold-500 text-[11px]`} />
-                    </div>
-                    <span>{item.text}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </main>
+          ))}
         </div>
       </div>
     </div>

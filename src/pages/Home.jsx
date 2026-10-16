@@ -249,6 +249,39 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ================= ABOUT OUR QURAN PAGE & SURAHS ================= */}
+      <section className="py-16 sm:py-20 bg-neutral-950 border-t border-gold-500/10 relative overflow-hidden">
+        {/* Ambient subtle glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-gold-500/5 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-10">
+            <span className="text-gold-500 font-semibold tracking-widest text-xs uppercase">
+              Sacred Revelation · 114 Surahs &amp; 30 Juz
+            </span>
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold mt-2 text-white">
+              The Holy Quran &amp; <span className="text-gold-gradient">Our Reading Portal</span>
+            </h2>
+            <div className="w-24 h-1 bg-gold-500 mx-auto mt-4 rounded-full" />
+          </div>
+
+          <div className="space-y-6 text-gray-300 text-base sm:text-lg leading-relaxed text-left sm:text-justify font-light">
+            <p>
+              The Holy Quran is the eternal word of Allah Almighty, revealed to Prophet Muhammad ﷺ as an infallible guidance, spiritual cure, and timeless mercy for all humanity. At Al Fatima Academy, our dedicated <Link to="/quran" className="text-gold-400 hover:text-gold-300 font-semibold underline underline-offset-4">Read Quran</Link> portal is thoughtfully crafted to bring students, families, and seekers worldwide closer to the divine message. Featuring all 114 Surahs and 30 Juz (Paras), our digital platform provides crystal-clear Uthmani Arabic script, comfortable font sizing, and smooth navigation so you can recite and contemplate anywhere with complete peace and zero distractions.
+            </p>
+
+            <p>
+              Through our interactive reader, learners can explore the profound virtues and spiritual depth of essential chapters. From <strong className="text-white font-medium">Surah Al-Fatiha</strong>, the foundational opening recited in every unit of prayer, to <strong className="text-white font-medium">Surah Al-Baqarah</strong>, the protective fortress that shields homes against negative influences and spiritual harm. Seekers of tranquility can recite <strong className="text-white font-medium">Surah Yaseen</strong> (The Heart of the Quran), renowned for bringing barakah and ease; <strong className="text-white font-medium">Surah Al-Mulk</strong>, which intercedes for its reader in the grave; and <strong className="text-white font-medium">Surah Ar-Rahman</strong>, reflecting divine compassion. Additionally, the blessed Friday sunnah of reading <strong className="text-white font-medium">Surah Al-Kahf</strong> illuminates the believer&apos;s path, while the protective <strong className="text-white font-medium">Four Quls</strong> (Al-Kafiroon, Al-Ikhlas, Al-Falaq, and An-Nas) safeguard against every affliction and envy.
+            </p>
+
+            <p>
+              Reciting the Quran is not merely uttering words, but engaging in direct communion with your Creator. Our portal bridges the gap between modern digital convenience and authentic Tarteel, helping students revise their daily Hifz lessons, master intricate Tajweed rules, and cultivate consistent Tilawah habits alongside their live classes. We invite every seeker of knowledge to open the sacred pages, reflect upon each ayah, and nourish their souls with the eternal light of divine guidance.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* ================= ONLINE CLASSES (ZOOM & GOOGLE MEET) ================= */}
       <div className="max-w-4xl mx-auto px-4 mt-16 mb-8 text-center">
         <h2 className="text-2xl md:text-3xl font-serif font-bold text-white mb-2">

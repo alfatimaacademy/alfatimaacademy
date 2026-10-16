@@ -5,6 +5,7 @@ const QUICK_LINKS = [
   { to: '/about', label: 'About Us' },
   { to: '/packages', label: 'Packages' },
   { to: '/quran', label: 'Read Quran' },
+  { to: '/blog', label: 'Blog' },
   { to: '/contact', label: 'Contact' },
 ];
 

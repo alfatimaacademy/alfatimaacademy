@@ -22,6 +22,7 @@ const DESKTOP_LINKS = [
   { to: '/services', label: 'Services', hover: 'hover:text-gold-500', dropdown: true },
   { to: '/packages', label: 'Packages', hover: 'hover:text-gold-400' },
   { to: '/quran', label: 'Read Quran', hover: 'hover:text-gold-500' },
+  { to: '/blog', label: 'Blog', hover: 'hover:text-gold-500' },
   { to: '/contact', label: 'Contact', hover: 'hover:text-gold-500' },
 ];
 
@@ -31,6 +32,7 @@ const MOBILE_LINKS = [
   { services: true },
   { to: '/packages', label: 'Packages', icon: 'fa-tags' },
   { to: '/quran', label: 'Read Quran', icon: 'fa-book-quran' },
+  { to: '/blog', label: 'Blog', icon: 'fa-newspaper' },
   { to: '/contact', label: 'Contact', icon: 'fa-envelope' },
 ];
 
